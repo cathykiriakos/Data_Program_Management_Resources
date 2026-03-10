@@ -89,17 +89,17 @@ This guidebook does **not** cover:
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │                        CONSUMPTION LAYER                            │
-│   BI Reports (Tableau / Power BI)  │  ML Features  │  APIs  │  SQL │
+│   BI Reports (Tableau / Power BI)  │  ML Features  │  APIs  │  SQL  │
 └──────────────────────┬──────────────────────────────────────────────┘
                        │  All metric consumption flows through here
 ┌──────────────────────▼──────────────────────────────────────────────┐
 │                      SEMANTIC LAYER  ◄── THIS GUIDEBOOK             │
 │                                                                     │
-│  ┌─────────────────┐  ┌──────────────────┐  ┌───────────────────┐  │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌───────────────────┐   │
 │  │  dbt Metrics    │  │ Snowflake Cortex  │  │  Databricks Genie │  │
 │  │  (primary)      │  │ Analyst / Semantic│  │  Unity Catalog    │  │
-│  └────────┬────────┘  └────────┬─────────┘  └────────┬──────────┘  │
-│           └───────────────────►│◄───────────────────┘             │
+│  └────────┬────────┘  └────────┬─────────┘  └────────┬──────────┘   │
+│           └───────────────────►│◄───────────────────┘               │
 │                    Collibra (governance control plane)              │
 └──────────────────────┬──────────────────────────────────────────────┘
                        │  Reads from certified Gold objects only
