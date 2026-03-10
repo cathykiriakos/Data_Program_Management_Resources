@@ -173,7 +173,8 @@ COLLIBRA (System of Record for Governance)
 | 03 | `03_DE_Standards.md` | 1.0 | Binding naming conventions, object creation, code, pipeline, access, cost standards |
 | 04 | `04_DE_Auditing_Guide.md` | 1.0 | 1LOD self-assessment controls + 2LOD independent audit procedures, evidence requirements |
 | 05 | `05_DE_Config_Change_Management.md` | 1.0 | Config-first architecture, Terraform, CI/CD, change classification tiers, CAB templates |
-| 06 | `05_DE_KPIs_and_Benchmarking.md` | 1.0 | Full KPI registry, scorecard, Python collector (Snowflake + Databricks API + Git) |
+| 06 | `06_DE_KPIs_and_Benchmarking.md` | 1.0 | Full KPI registry, scorecard, Python collector (Snowflake + Databricks API + Git) |
+| — | `DE_README.md` | 1.0 | Domain-level README and document index |
 
 ### 3.3 Business Intelligence (`Business_Intelligence_Standards/`)
 
@@ -187,6 +188,7 @@ COLLIBRA (System of Record for Governance)
 | 04 | `04_BI_Auditing_Guide.md` | 1.0 | 1LOD self-assessment + 2LOD audit procedures, access sampling, PII testing, regulatory readiness |
 | 05 | `05_BI_Config_Change_Management.md` | 1.0 | Config-first BI ops, Report Registry as code, environment promotion, change tiers, CAB templates |
 | 06 | `06_BI_KPIs_and_Benchmarking.md` | 1.0 | Full KPI registry, scorecard, Python collector (Snowflake + Tableau/Power BI APIs) |
+| — | `BI_README.md` | 1.0 | Domain-level README and document index |
 
 ### 3.4 Machine Learning (`Machine_Learning_Standards/`)
 
@@ -200,8 +202,20 @@ COLLIBRA (System of Record for Governance)
 | 04 | `04_ML_Auditing_Guide.md` | 1.0 | 1LOD controls + 2LOD audit procedures, bias auditing, lineage verification, regulatory readiness |
 | 05 | `05_ML_Config_Change_Management.md` | 1.0 | Config-first MLOps, model YAML config, CI/CD for ML, serving config, monitoring as code |
 | 06 | `06_ML_KPIs_and_Benchmarking.md` | 1.0 | Full KPI registry by model tier, scorecard, Python collector (MLflow + Snowflake) |
+| — | `ML_README.md` | 1.0 | Domain-level README and document index |
 
-### 3.5 Data Quality (`Data_Quality_Standards/`)
+### 3.5 Cross-Domain Standards (root `/`)
+
+> **Purpose:** Governing frameworks and operational standards that span all domains and cannot be owned by a single domain. These documents carry CDO and DGO joint ownership.
+
+| Document | Version | Description |
+|---|---|---|
+| `CROSS_DOMAIN_RACI.md` | 1.0 | Full accountability matrix — 35 RACI tables, 7 scenario-based decision trees, escalation paths, conflict resolution |
+| `DATA_INCIDENT_RESPONSE_PLAYBOOK.md` | 1.0 | P1–P4 incident classification, 8 incident type playbooks, evidence preservation, regulatory notification |
+| `DATA_PRODUCT_CERTIFICATION_FRAMEWORK.md` | 1.0 | T1–T4 certification tiers, five-pillar gate, Snowflake/Databricks/BI platform coverage, CI/CD pipeline |
+| `VENDOR_THIRD_PARTY_DATA_RISK_STANDARD.md` | 1.0 | V1–V4 vendor tiers, onboarding process, risk scoring, contractual requirements, monitoring, offboarding |
+
+### 3.6 Data Quality (`Data_Quality_Standards/`)
 
 > **Purpose:** Provides the engineering framework for building, running, storing, and observing automated data quality test suites. These are the implementation guides for DQ rules referenced in DE and Governance standards.
 
@@ -390,26 +404,32 @@ All documents in this library are versioned and reviewed on the following schedu
 
 | Domain | Documents | Status | Latest Version |
 |---|---|---|---|
-| Data Governance | 7 documents | ✅ Active | 2.0 |
-| Data Engineering | 6 documents | ✅ Active | 1.0 |
-| Business Intelligence | 6 documents | ✅ Active | 1.0 |
-| Machine Learning | 6 documents | ✅ Active | 1.0 |
+| Data Governance | 7 documents + domain README | ✅ Active | 2.0 |
+| Data Engineering | 6 documents + domain README | ✅ Active | 1.0 |
+| Business Intelligence | 6 documents + domain README | ✅ Active | 1.0 |
+| Machine Learning | 6 documents + domain README | ✅ Active | 1.0 |
 | Data Quality | 2 documents | ✅ Active | 1.0 |
+| Cross-Domain | 4 documents | ✅ Active | 1.0 |
 
 ---
 
 ## 10. Gaps & Planned Additions
 
-The following documents are identified as gaps in the current library and are prioritized for development:
+### 10.1 Completed Items
+
+| Document | Domain | Completed |
+|---|---|---|
+| `DATA_INCIDENT_RESPONSE_PLAYBOOK.md` | Cross-domain | ✅ 2026-03 |
+| `DATA_PRODUCT_CERTIFICATION_FRAMEWORK.md` | Cross-domain | ✅ 2026-03 |
+| `CROSS_DOMAIN_RACI.md` | Cross-domain | ✅ 2026-03 |
+| `VENDOR_THIRD_PARTY_DATA_RISK_STANDARD.md` | Cross-domain | ✅ 2026-03 |
+| Domain READMEs — DE, BI, ML | All | ✅ 2026-03 |
+
+### 10.2 Remaining Gaps
 
 | Priority | Document | Domain | Rationale |
 |---|---|---|---|
-| P0 | `DATA_INCIDENT_RESPONSE_PLAYBOOK.md` | Cross-domain | No documented response procedure for DQ breaches, PII exposure, unauthorized access |
-| P1 | `DATA_PRODUCT_CERTIFICATION_FRAMEWORK.md` | Cross-domain | Certification referenced across domains but not formally defined as a standalone process |
-| P1 | `CROSS_DOMAIN_RACI.md` | Cross-domain | Expanded RACI with scenario-based decision trees for inter-domain conflict resolution |
-| P2 | `VENDOR_THIRD_PARTY_DATA_RISK_STANDARD.md` | Cross-domain | No standard for onboarding, assessing, and governing external data providers |
-| P2 | `Data_Quality_Standards/01_DQ_Best_Practices.md` through `05_DQ_Config_Change_Management.md` | Data Quality | DQ domain has implementation guides but lacks the full six-document standards structure |
-| P3 | Domain README files for DE, BI, ML | All | Each domain folder should have its own `README.md` mirroring the `DATAGOV_README.md` format |
+| P2 | `Data_Quality_Standards/01_DQ_Best_Practices.md` through `05_DQ_Config_Change_Management.md` | Data Quality | DQ domain has implementation guides (docs 06 + 08) but lacks the full six-document standards structure (best practices, program establishment, standards, auditing guide, config & change management) |
 
 ---
 
@@ -428,4 +448,4 @@ The following documents are identified as gaps in the current library and are pr
 
 ---
 
-*Maintained by: Chief Data Office | Last reviewed: 2026-03 | Next scheduled review: 2026-09*
+*Maintained by: Chief Data Office | Last reviewed: 2026-03 (updated: cross-domain docs complete, domain READMEs added) | Next scheduled review: 2026-09*

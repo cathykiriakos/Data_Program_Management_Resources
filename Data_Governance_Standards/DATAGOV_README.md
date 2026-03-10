@@ -1,33 +1,38 @@
-# Data Governance Program Library
-> **Platform:** Snowflake / Databricks / Collibra | **Role:** Chief Data Officer  
-> **Version:** 2.0 | **Last Updated:** 2026-03
+# Data Governance Standards
+## Domain README — Document Index and Navigation Guide
+
+**Domain Owner:** Chief Data Officer + Data Governance Office
+**Platform:** Collibra (control plane) · Snowflake · Databricks
+**Version:** 2.0 | **Last Updated:** 2026-03
+**Classification:** Internal — Program Reference
+
+> **Purpose:** This domain defines the policies, standards, oversight model, and operating framework that govern all data across all domains. Collibra is the governance control plane. Snowflake and Databricks are the enforcement layer.
 
 ---
 
 ## Document Index
 
+| # | Document | Version | Status | Primary Audience |
+|---|---|---|---|---|
+| 01 | `01_data_governance_best_practices.md` | 2.0 | ✅ Active | All practitioners |
+| 02 | `02_establishing_governance_program.md` | 2.0 | ✅ Active | Program leads, CDO |
+| 03 | `03_data_governance_standards.md` | 2.0 | ✅ Active | Engineers, stewards |
+| 04 | `04_2nd_line_of_defense_strategy.md` | 2.0 | ✅ Active | Governance, Audit, Risk |
+| 05 | `05_kpis_and_benchmarking.md` | 2.0 | ✅ Active | CDO, Program leads |
+| 06 | `06_configuration_and_change_management.md` | 2.0 | ✅ Active | Engineers, IT, Change Mgmt |
+| 07 | `07_ground_up_strategy.md` | 2.0 | ✅ Active | CDO, Executives |
+
+### Document Descriptions
+
 | # | Document | Description |
 |---|---|---|
-| 01 | [Best Practices](./01_data_governance_best_practices.md) | Core principles, pillars, Collibra platform role, anti-patterns, maturity model |
-| 02 | [Establishing a Program](./02_establishing_governance_program.md) | Operating model, RACI, phased rollout with Collibra onboarding, meeting cadence |
-| 03 | [Standards](./03_data_governance_standards.md) | Naming, classification, DQ rules, access, lifecycle standards |
-| 04 | [2nd Line of Defense Strategy](./04_2nd_line_of_defense_strategy.md) | Oversight model, Collibra-sourced audit framework, escalation matrix, maturity scoring |
-| 05 | [KPIs & Benchmarking](./05_kpis_and_benchmarking.md) | Full KPI registry, scorecard, Python collector (Collibra API + Snowflake), benchmarks |
-| 06 | [Configuration & Change Management](./06_configuration_and_change_management.md) | **Executive guide** + governance-as-code, Collibra integration, CI/CD, CAB templates |
-| 07 | [Ground-Up Strategy](./07_ground_up_strategy.md) | CDO vision, 2-year roadmap, Collibra architecture, federated model, quick wins |
-
----
-
-## Technology Stack
-
-| Layer | Platform | Role |
-|---|---|---|
-| **Governance Control Plane** | Collibra Data Intelligence Cloud | Central catalog, glossary, workflows, DQ, lineage, access governance |
-| **Data Warehouse** | Snowflake | Data storage + technical enforcement (RBAC, masking, row policies, tagging) |
-| **Data Lakehouse** | Databricks (Unity Catalog) | Analytics + ML data with Unity Catalog governance enforcement |
-| **Governance Config** | Git (YAML) | Version-controlled source of truth for all governance rules |
-| **DQ Supplementary** | Great Expectations / dbt tests | Pipeline-layer quality gates feeding results to Collibra |
-| **Orchestration** | Airflow / CI/CD (GitHub Actions) | Automated deployment and KPI collection |
+| 01 | `01_data_governance_best_practices.md` | Core principles, pillars, Collibra platform role, anti-patterns, maturity model |
+| 02 | `02_establishing_governance_program.md` | Operating model, RACI, phased rollout with Collibra onboarding, meeting cadence |
+| 03 | `03_data_governance_standards.md` | Naming, classification schema, DQ rules, access, lifecycle standards |
+| 04 | `04_2nd_line_of_defense_strategy.md` | Oversight model, Collibra-sourced audit framework, escalation matrix, maturity scoring |
+| 05 | `05_kpis_and_benchmarking.md` | Full KPI registry, balanced scorecard, Python collector (Collibra API + Snowflake) |
+| 06 | `06_configuration_and_change_management.md` | Part A (executive guide) + Part B (governance-as-code, Collibra integration, CI/CD, CAB) |
+| 07 | `07_ground_up_strategy.md` | CDO vision, 2-year roadmap, Collibra architecture, federated governance model |
 
 ---
 
@@ -42,15 +47,28 @@
 
 ---
 
-## Domain Coverage (Planned)
+## Domain Coverage
 
-| Domain | Status |
-|---|---|
-| ✅ Data Governance | Complete (v2.0 — includes Collibra) |
-| 🔜 Data Engineering | Planned |
-| 🔜 Business Intelligence | Planned |
-| 🔜 Machine Learning | Planned |
+| Domain | Standards Status | README |
+|---|---|---|
+| ✅ Data Governance | Complete (v2.0 — includes Collibra) | This file |
+| ✅ Data Engineering | Complete (v1.0) | `Data_Engineering_Standards/DE_README.md` |
+| ✅ Business Intelligence | Complete (v1.0) | `Business_Intelligence_Standards/BI_README.md` |
+| ✅ Machine Learning | Complete (v1.0) | `Machine_Learning_Standards/ML_README.md` |
+| ✅ Cross-Domain | Complete (v1.0) | `README.md` (root) |
+| 🔧 Data Quality | Partial — docs 06 + 08 active; docs 01–05 pending | `Data_Quality_Standards/` |
 
 ---
 
-*Maintained by: Data Governance Office | CDO Sponsor: Chief Data Officer*
+## Related Cross-Domain Documents
+
+| Document | Description |
+|---|---|
+| `CROSS_DOMAIN_RACI.md` | Accountability matrix for all inter-domain activities |
+| `DATA_INCIDENT_RESPONSE_PLAYBOOK.md` | P1–P4 incident response procedures |
+| `DATA_PRODUCT_CERTIFICATION_FRAMEWORK.md` | T1–T4 data product certification |
+| `VENDOR_THIRD_PARTY_DATA_RISK_STANDARD.md` | External data vendor risk and onboarding |
+
+---
+
+*Maintained by: Data Governance Office | CDO Sponsor: Chief Data Officer | Last reviewed: 2026-03*
