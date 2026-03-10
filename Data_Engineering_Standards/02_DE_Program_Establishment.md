@@ -70,7 +70,7 @@ Week 4: Monitoring, alerting, cost tagging baseline
 - [ ] Snowflake account(s) provisioned per environment (dev/staging/prod)
 - [ ] Databricks workspace(s) provisioned per environment
 - [ ] Private endpoints configured for all platform connections
-- [ ] Okta / Azure AD SSO integrated for both platforms
+- [ ] Okta / Azure AD SSO OIDC integrated for both platforms
 - [ ] Terraform repository initialized with remote state (S3/Azure Blob)
 - [ ] GitHub/GitLab repository structure established
 - [ ] CI/CD pipeline (GitHub Actions / GitLab CI / Azure DevOps) operational
