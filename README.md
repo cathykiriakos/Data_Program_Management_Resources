@@ -39,7 +39,7 @@ Every document in this library is:
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │  GOVERNANCE CONTROL PLANE                                          │
-│  Collibra — Catalog · Glossary · Lineage · DQ · Access · Policy   │
+│  Collibra — Catalog · Glossary · Lineage · DQ · Access · Policy    │
 └──────────────────────────┬─────────────────────────────────────────┘
                            │ governs & certifies assets in
           ┌────────────────┴────────────────┐
