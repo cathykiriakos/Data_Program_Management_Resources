@@ -39,7 +39,7 @@ Every document in this library is:
 ```
 ┌────────────────────────────────────────────────────────────────────┐
 │  GOVERNANCE CONTROL PLANE                                          │
-│  Collibra — Catalog · Glossary · Lineage · DQ · Access · Policy   │
+│  Collibra — Catalog · Glossary · Lineage · DQ · Access · Policy    │
 └──────────────────────────┬─────────────────────────────────────────┘
                            │ governs & certifies assets in
           ┌────────────────┴────────────────┐
@@ -424,12 +424,6 @@ All documents in this library are versioned and reviewed on the following schedu
 | `CROSS_DOMAIN_RACI.md` | Cross-domain | ✅ 2026-03 |
 | `VENDOR_THIRD_PARTY_DATA_RISK_STANDARD.md` | Cross-domain | ✅ 2026-03 |
 | Domain READMEs — DE, BI, ML | All | ✅ 2026-03 |
-
-### 10.2 Remaining Gaps
-
-| Priority | Document | Domain | Rationale |
-|---|---|---|---|
-| P2 | `Data_Quality_Standards/01_DQ_Best_Practices.md` through `05_DQ_Config_Change_Management.md` | Data Quality | DQ domain has implementation guides (docs 06 + 08) but lacks the full six-document standards structure (best practices, program establishment, standards, auditing guide, config & change management) |
 
 ---
 
