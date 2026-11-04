@@ -184,7 +184,46 @@ def check_headers(root: Path) -> list[Finding]:
     return findings
 
 
-CHECKS = (check_index, check_references, check_folder_names, check_prose, check_headers)
+SOURCES_PATH = "Agentic_AI_Standards/SOURCES.md"
+SOURCES_CONFIDENCE = {"confirmed", "secondary only", "unverified"}
+SOURCES_DATE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+SOURCES_URL = re.compile(r"^<?https?://\S+>?$")
+
+
+def check_sources(root: Path) -> list[Finding]:
+    """Every SOURCES.md table row needs a URL, an ISO access date and a known confidence."""
+    path = root / SOURCES_PATH
+    if not path.is_file():
+        return []
+    findings: list[Finding] = []
+    columns: dict[str, int] = {}
+    for number, line in enumerate(read_text(path).splitlines(), start=1):
+        stripped = line.strip()
+        if not stripped.startswith("|"):
+            columns = {}
+            continue
+        cells = [c.strip() for c in stripped.strip("|").split("|")]
+        if not columns:
+            columns = {c.lower(): i for i, c in enumerate(cells)}
+            continue
+        if all(set(c) <= set("-: ") for c in cells):
+            continue
+        def cell(name: str) -> str:
+            i = columns.get(name)
+            return cells[i] if i is not None and i < len(cells) else ""
+        if not SOURCES_URL.match(cell("primary url")):
+            findings.append(Finding("sources", SOURCES_PATH, number, "Primary URL is not an http(s) URL"))
+        if not SOURCES_DATE.match(cell("accessed")):
+            findings.append(Finding("sources", SOURCES_PATH, number, "Accessed is not YYYY-MM-DD"))
+        if cell("confidence") not in SOURCES_CONFIDENCE:
+            findings.append(
+                Finding("sources", SOURCES_PATH, number,
+                        "Confidence must be confirmed, secondary only, or unverified")
+            )
+    return findings
+
+
+CHECKS = (check_index, check_references, check_folder_names, check_prose, check_headers, check_sources)
 
 
 def run(root: Path) -> list[Finding]:

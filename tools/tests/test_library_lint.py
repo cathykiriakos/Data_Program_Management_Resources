@@ -154,3 +154,46 @@ def test_main_exit_codes(tmp_path, capsys):
     write(tmp_path, "STRAY.md")
     assert ll.main(["--root", str(tmp_path)]) == 1
     assert "STRAY.md" in capsys.readouterr().out
+
+
+SOURCES_HEAD = (
+    "# Sources\n\n"
+    "| Claim | Primary URL | Accessed | Confidence | Cited in |\n"
+    "|---|---|---|---|---|\n"
+)
+
+
+def sources_file(root, rows):
+    return write(root, "Agentic_AI_Standards/SOURCES.md", SOURCES_HEAD + rows)
+
+
+def test_sources_clean_file_passes(tmp_path):
+    sources_file(
+        tmp_path,
+        "| A claim | https://example.org/a | 2026-11-04 | confirmed | Snapshot 1 |\n"
+        "| Other | https://example.org/b | 2026-11-04 | secondary only | Snapshot 2 |\n"
+        "| Third | https://example.org/c | 2026-11-04 | unverified | Snapshot 3 |\n",
+    )
+    assert ll.check_sources(tmp_path) == []
+
+
+def test_sources_missing_file_is_not_an_error(tmp_path):
+    assert ll.check_sources(tmp_path) == []
+
+
+def test_sources_row_without_url_is_reported(tmp_path):
+    sources_file(tmp_path, "| A claim | n/a | 2026-11-04 | confirmed | Snapshot 1 |\n")
+    out = messages(ll.check_sources(tmp_path))
+    assert len(out) == 1 and "URL" in out[0] and ":5" in out[0]
+
+
+def test_sources_row_with_bad_date_is_reported(tmp_path):
+    sources_file(tmp_path, "| A claim | https://example.org/a | 04-11-2026 | confirmed | S |\n")
+    out = messages(ll.check_sources(tmp_path))
+    assert len(out) == 1 and "Accessed" in out[0]
+
+
+def test_sources_row_with_unknown_confidence_is_reported(tmp_path):
+    sources_file(tmp_path, "| A claim | https://example.org/a | 2026-11-04 | probably | S |\n")
+    out = messages(ll.check_sources(tmp_path))
+    assert len(out) == 1 and "onfidence" in out[0]
