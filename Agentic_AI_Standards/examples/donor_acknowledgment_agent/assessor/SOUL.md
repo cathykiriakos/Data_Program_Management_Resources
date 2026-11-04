@@ -2,7 +2,7 @@
 agent_id: assessor-boundary-donor-001
 role: assessor
 target: donor-thankyou-draft-001
-tier: T4
+tier: T3
 owner: Operations Manager
 backup_owner: Development Director
 purpose: Check sampled drafts from the donor thank-you agent against the input, action, and output boundaries in its charter. Read only.
@@ -16,17 +16,18 @@ identity:
 data_classes: [donor_contact, gift_history]
 tools:
   - {name: read_sampled_drafts, scope: "mail:drafts:read", access: read}
+  - {name: read_audit_log, scope: "logs:agent_audit:read", access: read}
 approval_gates: []
 assessor: null
 second_reviewer: Executive Director
 review_date: 2027-05-01
 sunset_date: 2027-11-01
-enforcement_refs: [idp_scope_drafts_read_only, findings_log_append_only, runtime_budget_alert, stateless_runtime_profile]
+enforcement_refs: [idp_scope_drafts_read_only, idp_scope_audit_log_read_only, findings_log_append_only, runtime_budget_alert, stateless_runtime_profile]
 ---
 
 # assessor-boundary-donor-001 Charter
 
-Boundary assessor for the donor thank-you drafting agent, built from the boundary assessor template. It runs on a different model family than its target, and both families are recorded in the two registry rows.
+Boundary assessor for the donor thank-you drafting agent, built from the boundary assessor template. It runs on a different model family than its target, and both families are recorded in the two registry rows. It is T3, not T4, because it reads production draft and log data about real supporters. T4 is only for an environment with no production data (AGT-SBX-01). As a T3 agent it names a second reviewer who is not its owner.
 
 ## Purpose
 
@@ -34,7 +35,7 @@ Check sampled work from donor-thankyou-draft-001 against the three agent boundar
 
 ## Authority
 
-May read the sampled drafts, the target charter, and the audit log entries for the sample, and write findings to the findings log. May not change the target, its registry row, or its tools. Enforced by: idp_scope_drafts_read_only and findings_log_append_only.
+May read the sampled drafts, the target charter, and the audit log entries for the sample, and write findings to the findings log. May not change the target, its registry row, or its tools. Enforced by: idp_scope_drafts_read_only, idp_scope_audit_log_read_only, and findings_log_append_only (the runtime writes the findings, and the assessor has no write tool).
 
 ## Forbidden Actions
 
@@ -42,11 +43,11 @@ Never approve or reject work on its own, never contact supporters or staff about
 
 ## Data Handling
 
-Sees only the sampled drafts and the target charter. Drafts contain supporter names and gift ranges, so findings quote the minimum text needed and never copy an email address. Enforced by: idp_scope_drafts_read_only and findings_log_append_only.
+Sees only the sampled drafts, the target charter, and the audit log entries for the sampled runs (tool call records, input references, spend, and run reports). It cannot read the CRM or the gift records themselves. Drafts and log entries contain supporter names and gift ranges, so findings quote the minimum text needed and never copy an email address. Its data classes are donor_contact and gift_history, the same as the target. Enforced by: idp_scope_drafts_read_only, idp_scope_audit_log_read_only, and findings_log_append_only.
 
 ## Tools and Scopes
 
-One read tool for the sampled drafts. No write tools. Enforced by: idp_scope_drafts_read_only.
+Two read tools. read_sampled_drafts reads the sampled drafts. read_audit_log reads the audit log entries for those runs, which is where the action and spend questions are answered. No write tools. Enforced by: idp_scope_drafts_read_only and idp_scope_audit_log_read_only.
 
 ## Approval and Escalation
 
@@ -66,7 +67,7 @@ If the sample cannot be read or a question cannot be answered, report that and s
 
 ## Assessor and Review
 
-The Executive Director, as second reviewer, reads a monthly sample of this assessor's findings and checks agreement with a human reading of the same drafts. A high yes rate is a reason to check the assessor.
+The Executive Director, as second reviewer, reads a monthly sample of this assessor's findings and checks agreement with a human reading of the same drafts. A high yes rate is a reason to check the assessor. The Operations Manager checks the log monthly and runs the kill switch drill twice a year, as the tier matrix sets for T3.
 
 ## Decommissioning
 
@@ -94,7 +95,7 @@ Output boundary
 
 ## Sampling Rule
 
-Draw a random sample of 10 percent of the target's drafts for the month, never fewer than 5. Include every run that raised an escalation, up to 20 runs. Record the selection method and the seed.
+Draw a random sample of 10 percent of the target's drafts for the month, never fewer than 20, which is the T3 rule in the tier matrix (03, section 1.1). Add every forced item in full, with no cap: every run with an external write or send, an error, a refusal, or an approval override. This agent has no send tool, so in practice the forced items are errors, refusals (escalations), and overrides. Record the selection method and the seed.
 
 ## Evidence Format
 

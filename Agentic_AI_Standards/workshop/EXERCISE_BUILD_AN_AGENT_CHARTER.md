@@ -26,14 +26,16 @@ Avoid for this exercise: anything that decides who gets a service, anything touc
 
 ### Step 2. Choose the tier (8 minutes)
 
-Tiers come from the risk tier definitions in the [AI_FIRST_STRATEGY_ADDENDUM.md](../../AI_FIRST_STRATEGY_ADDENDUM.md) (section 3.1.1, action 3), and the data class rules in AGT-DAT-01 of `Agentic_AI_Standards/03_Agentic_Standards.md` narrow them for social sector data. Read your idea and answer in order. Stop at the first yes.
+Tiers come from the risk tier definitions in the [AI_FIRST_STRATEGY_ADDENDUM.md](../../AI_FIRST_STRATEGY_ADDENDUM.md) (section 3.1.1, action 3), and the data class rules in AGT-DAT-01 of `Agentic_AI_Standards/03_Agentic_Standards.md` narrow them for social sector data. Answer all four questions below, then apply one rule: **take the highest tier any answer gives (T1 is highest), unless the draft-only exception applies and the program lead records it.**
 
-1. Is it customer or client facing, or does it handle financial transactions or health information? That is T1. T1 is not on the lean track. Stop and read `Agentic_AI_Standards/02_Agentic_Program_Establishment.md` before you build.
-2. Does it use personal information or confidential data? That is T2 under the addendum. Exception: for donor and gift data, AGT-DAT-01 allows a purpose-bound agent that only drafts, so a draft-only donor agent with a staff approval gate may be run as T3. If you take that exception, write the reason in the charter's Authority section.
+1. Is it customer or client facing, or does it handle financial transactions? That is T1. Does it handle health information? That is T1 or T2, per AGT-DAT-01, and it is not on the lean track. For either, stop and read `Agentic_AI_Standards/02_Agentic_Program_Establishment.md` before you build.
+2. Does it use personal information or confidential data? That is T2 under the addendum.
 3. Does it use only public or internal data? That is T3.
 4. Does it run in a sandbox with no production data? That is T4.
 
-If two answers fit, take the higher tier (the lower number). Your tier decides what you must name in the charter: T1 and T2 need an assessor agent and an approval gate, T3 needs an assessor agent or a named second reviewer, and T4 may have neither. Any write tool on a T1 to T3 agent needs an approval gate.
+The draft-only exception: an agent with no send tool and no external write, limited to non-sensitive supporter contact and gift data, MAY run as T3 instead of T2 when the program lead records the exception. If you take it, add a `tier_exception` block (reason, approver_role, date) to the registry row and restate it in the charter's Authority section. The linter does not check this, so it is a manual step. The exception does not apply to health, immigration, minors, safety-sensitive, or wealth rating data.
+
+Your tier decides what you must name in the charter. The tier matrix in section 1.1 of `Agentic_AI_Standards/03_Agentic_Standards.md` is the single source: T1 and T2 need an assessor agent and at least one approval gate. T3 needs an assessor agent or a named second reviewer who is not the owner, and a gate for every write tool. T4 may have neither. Cadences and sampling rates are in the same matrix.
 
 Write down: tier, and one sentence on why.
 
@@ -52,9 +54,9 @@ Two rules for the writing. Use plain sentences, and put no policy in the Voice s
 ### Step 4. Fill the registry row (8 minutes)
 
 1. Copy `Agentic_AI_Standards/templates/registry.schema.yaml` into your folder and name the copy `registry_row.yaml`. Delete the comment block if you like. The comments are ignored by the linter.
-2. Set `agent_id` and `tier` to match the charter.
+2. Set `agent_id` and `tier` to match the charter. Copy the `identity` block too.
 3. Copy the same write tools, with the same names and scopes, into `tools`. Read tools may differ. Copy `data_classes` and `approval_gates` so they match the charter exactly.
-4. Fill `spend_cap_usd_month`, the model block (provider, id, pinned_version, family), the `enforcement` map with one entry for each name in your charter's `enforcement_refs`, `status`, and `last_assessed`.
+4. Fill `spend_cap_usd_month`, the model block (provider, id, pinned_version, family), the `model_review` answers, the `enforcement` map with one key for each name in your charter's `enforcement_refs`, `status` (proposed, active, suspended, or retired), and `last_assessed`. Add `tier_exception` only if you used the draft-only exception.
 5. If you named an assessor agent, make a second row for it in a subfolder with its own charter, built from `Agentic_AI_Standards/templates/assessors/boundary_assessor.md`. Give it a model family different from your agent's. If you do not have time, name a second reviewer role instead and set `assessor: null`, which is allowed for T3.
 
 ### Step 5. Run the linter (5 minutes)
@@ -63,7 +65,7 @@ Two rules for the writing. Use plain sentences, and put no policy in the Voice s
 python tools/agent_lint.py my_agent
 ```
 
-Exit code 0 and the words "agent_lint: clean" mean the charter, the row, and the tier rules agree. Each finding names a check: frontmatter, section, tier, date, secret, registry, mirror, or family. Fix and run again. Common first findings are a leftover placeholder, a write tool in the charter that the row lacks, and a gate listed in only one place.
+Exit code 0 and the words "agent_lint: clean" mean the charter, the row, and the tier rules agree. Each finding names a check: frontmatter, section, tier, date, secret, placeholder, registry, mirror, or family. Fix and run again. Common first findings are a leftover double-brace placeholder, a write tool in the charter that the row lacks, a gate listed in only one place, a tier that differs between the two files, and an `enforcement_refs` name with no key in the row.
 
 A clean result does not mean the controls exist. The linter reads documents. Someone still has to confirm the scopes and the cap in the real systems.
 
@@ -85,7 +87,7 @@ Each pair shares one finding that surprised them. Facilitators use the prompts i
 
 ## Lean path with no tooling
 
-Use this if you cannot run Python. It is the same set of checks the linter runs, by hand. Tick each line, and have your neighbor tick it again in step 6.
+Use this if you cannot run Python. It covers most of what the linter checks, by hand. The linter checks that the assessor charter has a target field, that the registry row exists, that the assessor and its target have different model families, that `tier` and `enforcement_refs` agree between the files, that the row status is one of four values, and that no `{{...}}` placeholder is left. The manual lines below that have no linter equivalent are the assessor read-only check (the assessor has read tools only and no gates, which the linter does not test) and the search across both files for secrets. Tick each line, and have your neighbor tick it again in step 6.
 
 Frontmatter fields present and filled in:
 
@@ -105,7 +107,7 @@ Sections present, with these exact headings, each as a level 2 heading:
 Tier rules:
 
 - [ ] T1 or T2: an assessor is named and at least one approval gate is listed
-- [ ] T3: an assessor is named, or second_reviewer holds a role
+- [ ] T3: an assessor is named, or second_reviewer holds a role that is not the owner
 - [ ] T1 to T3 with a write tool: at least one approval gate is listed
 
 Mirror with the registry row, checked in both directions:
@@ -113,13 +115,16 @@ Mirror with the registry row, checked in both directions:
 - [ ] Every write tool in the charter appears in the row with the same name and scope, and the row has no extra write tool
 - [ ] data_classes are identical in the charter and the row
 - [ ] approval_gates are identical in the charter and the row
-- [ ] The row has agent_id, tools, data_classes, approval_gates, spend_cap_usd_month, model, enforcement, status
+- [ ] The row has agent_id, tier (same as the charter), tools, data_classes, approval_gates, spend_cap_usd_month, model, enforcement, status
+- [ ] Every name in enforcement_refs is a key in the row's enforcement map
+- [ ] status is one of proposed, active, suspended, retired
+- [ ] No double-brace placeholder is left in either file
 - [ ] The model block has provider, id, pinned_version, family
 
 Dates and secrets:
 
 - [ ] review_date is a real date in the future
-- [ ] sunset_date is a real date
+- [ ] sunset_date is a real date in the future
 - [ ] No key, token, password, or private key appears anywhere in either file. Search for "sk-", "AKIA", "ghp_", "xox", "BEGIN", "password", and "secret"
 
 Independence:
@@ -133,7 +138,7 @@ This key is for facilitators. Compare a participant's work with the worked examp
 
 | Check | What good looks like | Where to see it |
 |---|---|---|
-| Tier choice | Reasoning stated in a sentence, and the higher tier taken when two fit | The example is T3 because donor data is allowed for a draft-only agent under AGT-DAT-01. Under the addendum alone, personal data would give T2 |
+| Tier choice | Reasoning stated in a sentence, and the highest tier taken unless the draft-only exception applies and is recorded | The example is T3 under the recorded AGT-DAT-01 exception (`tier_exception` in the row, restated in Authority). Under the addendum alone, personal data would give T2 |
 | Frontmatter | All fields filled, roles instead of names, dates after 2026-11-04 | `Agentic_AI_Standards/examples/donor_acknowledgment_agent/SOUL.md` |
 | Forbidden Actions | Specific verbs (send, edit, contact), each with a control that stops it | Example, Forbidden Actions section |
 | Data Handling | Allowed classes and, separately, a list of what it must never touch | Example, Data Handling section |

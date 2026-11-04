@@ -16,5 +16,6 @@ jobs:
       - run: pip install -r requirements-dev.txt
       - run: pytest tools/tests
       - run: python tools/library_lint.py
-      - run: python tools/agent_lint.py Agentic_AI_Standards/examples
+      # Pin the date so the example charters, with review dates in 2027, do not start failing as time passes.
+      - run: python tools/agent_lint.py Agentic_AI_Standards/examples --today 2026-11-04
         if: ${{ hashFiles('tools/agent_lint.py') != '' && hashFiles('Agentic_AI_Standards/examples/**') != '' }}

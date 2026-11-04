@@ -80,7 +80,7 @@ The library's change tiers are defined in `README.md` section 8.1: Self-Service,
 | Skill or MCP server added to an allowlist | Standard | Minor | Major | See section 5 |
 | Assessor changed (new rubric, new model, new sampling rule) | n/a | Minor | Minor | Triggers calibration. See the Auditing Guide (04) |
 | Spend cap raised | Standard | Standard | Minor | Cost control. Lowering a cap is Self-Service |
-| Tier change (for example T3 to T2) | Minor | Major | Major | Moves the agent under a different rule set |
+| Tier change (for example T3 to T2), or adding or ending a `tier_exception` | Minor | Major | Major | Moves the agent under a different rule set. The requirements for each tier are in the tier matrix, 03 section 1.1 |
 | Agent moved to a new runtime or hosting platform | Minor | Major | Major | Changes where every enforcement control lives |
 | Agent suspended or retired | Self-Service | Standard | Standard | Lowers risk. Follow section 7 |
 | Emergency fix after an incident | Hotfix | Hotfix | Hotfix | Retrospective change record within 24 hours, then a normal review |
@@ -105,6 +105,7 @@ Small organizations that have no formal change board treat it as the program lea
 - Widening a scope and describing it as a wording change.
 - Merging a change that fails lint and fixing it afterward.
 - Raising an agent's tier number toward T4 to ease review, without the program lead's decision recorded in the registry.
+- Running a donor agent as T3 under the AGT-DAT-01 exception without a `tier_exception` record, or keeping the exception after the agent gains a send tool or an external write. Either one is a tier change to T2.
 
 ---
 

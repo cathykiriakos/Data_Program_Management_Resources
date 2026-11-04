@@ -35,7 +35,9 @@ Draft a short thank-you message for each gift in the weekly CRM export so that d
 
 The agent may read the gift export view and create drafts in the shared drafts folder. It may choose wording within the approved tone guide. It may not decide who receives a message, may not promise anything, and may not state tax receipt, matching gift, pledge, or recognition terms, because those need a staff member to confirm. Anything outside this list is not allowed. Enforced by: idp_scope_mail_drafts_only and crm_view_two_field_groups.
 
-Equity review (AGT-EQ-01): completed 2026-11-03 by the Operations Manager. Thank-you outreach is not a decision about a person's access to a service, but it shapes how supporters are treated, so the review was done anyway. Drafts were generated for a test set that varied gift size, name format, language of record, and giving history. Findings: no difference in warmth or length by gift size beyond the tone guide, and names with diacritics or several family names were kept as written. Action: staff keep writing personal notes for every gift above the major-gift threshold. Repeat at each review date and whenever the model, prompt, data source, or supporter population changes.
+Tier exception (AGT-DAT-01): this agent runs as T3, not T2, although it reads supporter contact and gift data. The exception holds because the agent is draft-only (no send tool, no external write) and is limited to non-sensitive donor_contact and gift_history. The program lead recorded it on 2026-10-15 in the registry row field `tier_exception`. It ends if the agent gains a send tool or any external write, or if any other data class is added. Checking it is manual.
+
+Equity review (AGT-EQ-01): completed 2026-11-03 by the Operations Manager. AGT-EQ-01 lists outreach among the decisions about a person, and a thank-you draft shapes how a supporter is treated, so the review was required and not optional. Drafts were generated for a test set that varied gift size, name format, language of record, and giving history. Findings: no difference in warmth or length by gift size beyond the tone guide, and names with diacritics or several family names were kept as written. Action: staff keep writing personal notes for every gift above the major-gift threshold. Repeat at each review date and whenever the model, prompt, data source, or supporter population changes.
 
 ## Forbidden Actions
 
@@ -67,7 +69,7 @@ On any tool error, unreadable export, unexpected field, or spend alert, stop, wr
 
 ## Assessor and Review
 
-The boundary assessor (assessor-boundary-donor-001) runs on a different model family and samples ten percent of drafts each month, at least five, and reads every run that raised an escalation. The Operations Manager reads every assessor no and a monthly sample of yes answers, and compares them with a human reading of the same drafts. The Development Director reviews this charter at each review date, checks the log monthly, and runs the kill switch drill twice a year. The assessor is a triage aid. The staff review before send is the gate.
+The boundary assessor (assessor-boundary-donor-001) runs on a different model family and samples ten percent of drafts each month, at least 20, as the T3 row of the tier matrix sets. It adds every forced item in full with no cap: external writes (there are none, since the agent cannot send), errors, refusals, and approval overrides. The Operations Manager reads every assessor no and a monthly sample of yes answers, and compares them with a human reading of the same drafts. The Development Director reviews this charter at each review date, checks the log monthly, and runs the kill switch drill twice a year. The assessor is a triage aid. The staff review before send is the gate.
 
 ## Decommissioning
 

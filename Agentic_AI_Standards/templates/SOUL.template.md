@@ -35,8 +35,17 @@ points to them with model_ref and spend_cap_ref so there is one place to edit. W
 tools, data classes, and approval gates are written in both places on purpose, and
 the agent linter fails when the two differ. Replace every double-brace placeholder,
 delete this comment, then run: python tools/agent_lint.py PATH
-Tier rules: T1 and T2 need an assessor and an approval gate. T3 needs an assessor or
-a named second_reviewer. T4 may have neither. Write tools on T1 to T3 need a gate.
+Tier rules are in one table, the tier matrix in section 1.1 of 03_Agentic_Standards.md.
+The linter enforces these parts of it: T1 and T2 need an assessor and at least one
+approval gate. T3 needs an assessor or a named second_reviewer. second_reviewer must
+not be the owner for T1 to T3. A write tool on T1 to T3 needs a gate. A read-only T3
+agent and a T4 agent may have an empty approval_gates list. Every other part of the
+matrix (cadences, drills, sampling) is manual.
+Tier exception: a draft-only donor agent (no send tool, no external write, non-sensitive
+supporter contact and gift data) MAY run as T3 when the program lead records it
+(AGT-DAT-01). Record a tier_exception block in the registry row (reason, approver_role,
+date) and restate it in the Authority section. The linter does not check it: manual.
+Every name in enforcement_refs must be a key in the registry row's enforcement map.
 -->
 
 # {{agent_id}} Charter

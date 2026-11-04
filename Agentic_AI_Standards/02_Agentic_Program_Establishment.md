@@ -46,20 +46,20 @@ Decision rights, in short: the owner proposes and maintains, the reviewer checks
 
 ## 2. Lean Track and Full Track
 
-The pillar offers two tracks. The lean track is for teams of one to ten staff running T3 and T4 agents. The full track is for T1 and T2 agents, and for larger organizations that want the stronger evidence. The tiers themselves are defined in section 3.1.1 of the addendum. Tier assignment does not change with the track: an agent that handles client health data is T1 or T2 whatever the size of the team, and so is on the full track. A small team that needs a T1 or T2 agent must either meet the full track or decide not to run the agent.
+The pillar offers two tracks. The lean track is for teams of one to ten staff running T3 and T4 agents. The full track is for T1 and T2 agents, and for larger organizations that want the stronger evidence. The tiers themselves are defined in section 3.1.1 of the addendum. Tier assignment does not change with the track: an agent that handles client health data is T1 or T2 whatever the size of the team, and so is on the full track. A small team that needs a T1 or T2 agent must either meet the full track or decide not to run the agent. One approved exception exists for tier assignment: a draft-only donor agent (no send tool, no external write, non-sensitive supporter contact and gift data) MAY run as T3 instead of T2 when the program lead records a `tier_exception` in its registry row, as AGT-DAT-01 in 03 sets out.
 
-The table lists what each tier requires under each track. "Charter" means a charter that passes `tools/agent_lint.py`. "Registry row" means a complete row with its enforcement map.
+The tier matrix in section 1.1 of 03 is the single source for tier requirements. The table below shows the same requirements by track, and if it ever differs from the matrix, the matrix governs. The table lists what each tier requires under each track. "Charter" means a charter that passes `tools/agent_lint.py`. "Registry row" means a complete row with its enforcement map.
 
 | Requirement | T4 lean | T3 lean | T3 full | T2 full | T1 full |
 |---|---|---|---|---|---|
 | Charter, passing the linter | Required | Required | Required | Required | Required |
 | Registry row with enforcement map | Required | Required | Required | Required | Required |
 | Own scoped service account | Required | Required | Required | Required | Required |
-| Approval gate on external writes and sends | Required | Required | Required | Required | Required, plus at least one gate even on read only agents |
+| Approval gate | Not required (no production data, no external write) | One for every write tool | One for every write tool | At least one | At least one, even on read only agents |
 | Spend cap and alert | Required | Required | Required | Required | Required |
 | Kill switch drilled | Before go-live, then yearly | Before go-live, then twice a year | Before go-live, then twice a year | Before go-live, then quarterly | Before go-live, then quarterly |
-| Reviewer | The owner | A second person using the boundary assessor rubric as a checklist, or an assessor agent | An assessor agent plus a named second person for sampled findings | An assessor agent and a named human approver | An assessor agent and a named human approver |
-| Review cadence | Monthly owner review | Monthly review | Monthly review, assessor sampling each cycle | Monthly review, assessor sampling each cycle | Monthly review, assessor sampling each cycle |
+| Reviewer | The owner | A named second reviewer who is not the owner, or an assessor agent | An assessor agent plus a named second person for sampled findings | An assessor agent and a named human approver who is not the owner | An assessor agent and a named human reviewer who is not the owner |
+| Review cadence | Monthly owner log review and self-check | Monthly | Monthly, assessor sampling each cycle | Monthly, assessor sampling each cycle | Monthly, assessor sampling each cycle |
 | Adversarial testing | Not required | Not required | Per addendum tier cadence | Per addendum tier cadence | Per addendum tier cadence |
 | AIUC-1 alignment | Not required | Not required | Optional | Required | Required |
 | Equity review (agents touching decisions about people) | Required | Required | Required | Required | Required |

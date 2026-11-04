@@ -101,6 +101,7 @@ def test_t3_needs_assessor_or_second_reviewer(valid):
 
 def test_t4_may_omit_assessor_and_gates(valid):
     edit(valid / "SOUL.md", "tier: T3", "tier: T4")
+    edit(valid / "registry_row.yaml", "tier: T3", "tier: T4")
     edit(valid / "SOUL.md", "assessor: assessor-conformance-001", "assessor: null")
     edit(valid / "SOUL.md", "approval_gates: [staff_review_before_send]", "approval_gates: []")
     edit(valid / "registry_row.yaml", "[staff_review_before_send]", "[]")
@@ -174,6 +175,96 @@ def test_discovery_ignores_other_markdown(valid):
     assert msgs(lint(valid)) == []
 
 
+def test_tier_differing_between_charter_and_row_is_a_mirror_error(valid):
+    edit(valid / "registry_row.yaml", "tier: T3", "tier: T2")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "mirror" in out[0] and "tier" in out[0]
+
+
+def test_enforcement_ref_without_a_row_key_is_an_error(valid):
+    edit(valid / "SOUL.md", "[idp_scope_mail_drafts_only, runtime_budget_alert]",
+         "[idp_scope_mail_drafts_only, runtime_budget_alert, no_such_control]")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "no_such_control" in out[0]
+
+
+def test_extra_row_enforcement_key_is_allowed(valid):
+    edit(valid / "registry_row.yaml", "enforcement:\n",
+         "enforcement:\n  extra_control: something else\n")
+    assert msgs(lint(valid)) == []
+
+
+def test_model_must_be_a_mapping_with_four_fields(valid):
+    row = valid / "registry_row.yaml"
+    text = row.read_text(encoding="utf-8")
+    start, end = text.index("model:"), text.index("enforcement:")
+    row.write_text(text[:start] + "model: model-a-large\n" + text[end:], encoding="utf-8")
+    out = msgs(lint(valid))
+    assert any("registry" in m and "model" in m and "mapping" in m for m in out)
+
+
+def test_model_missing_a_field_is_an_error(valid):
+    edit(valid / "registry_row.yaml", "  family: family_a\n", "")
+    out = msgs(lint(valid))
+    assert any("model" in m and "family" in m for m in out)
+
+
+def test_registry_status_must_be_a_known_value(valid):
+    edit(valid / "registry_row.yaml", "status: active", "status: live")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "status" in out[0] and "live" in out[0]
+
+
+@pytest.mark.parametrize("status", ["proposed", "active", "suspended", "retired"])
+def test_registry_status_known_values_pass(valid, status):
+    edit(valid / "registry_row.yaml", "status: active", f"status: {status}")
+    assert msgs(lint(valid)) == []
+
+
+def test_secret_in_registry_row_is_reported_without_echoing_it(valid):
+    secret = "sk-" + "A1b2C3d4E5f6G7h8I9j0K1l2"
+    edit(valid / "registry_row.yaml", "budget alert at 80 percent", f"budget alert {secret}")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "secret" in out[0].lower() and "registry" in out[0].lower()
+    assert secret not in out[0] and secret[:12] not in out[0]
+
+
+def test_sunset_date_in_the_past_is_an_error(valid):
+    out = msgs(lint(valid, today=date(2027, 11, 2)))
+    assert any("sunset_date" in m for m in out)
+
+
+def test_sunset_date_equal_to_today_passes(valid):
+    out = msgs(lint(valid, today=date(2027, 11, 1)))
+    assert not any("sunset_date" in m for m in out)
+
+
+def test_placeholder_left_in_charter_is_an_error(valid):
+    edit(valid / "SOUL.md", "Warm, plain, short.", "Warm, plain, {{tone}}.")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "placeholder" in out[0] and "{{tone}}" in out[0]
+
+
+def test_placeholder_left_in_registry_row_is_an_error(valid):
+    edit(valid / "registry_row.yaml", "budget alert at 80 percent", "budget alert at {{pct}} percent")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "placeholder" in out[0] and "registry" in out[0].lower()
+
+
+@pytest.mark.parametrize("value", ["Program Operations Lead", "  program operations LEAD "])
+def test_second_reviewer_equal_to_owner_is_an_error(valid, value):
+    edit(valid / "SOUL.md", "second_reviewer: null", f"second_reviewer: {value}")
+    out = msgs(lint(valid))
+    assert len(out) == 1 and "second_reviewer" in out[0] and "owner" in out[0]
+
+
+def test_t4_second_reviewer_may_equal_owner(valid):
+    edit(valid / "SOUL.md", "tier: T3", "tier: T4")
+    edit(valid / "registry_row.yaml", "tier: T3", "tier: T4")
+    edit(valid / "SOUL.md", "second_reviewer: null", "second_reviewer: Program Operations Lead")
+    assert msgs(lint(valid)) == []
+
+
 # Template lint: fill placeholders and confirm the templates themselves are clean.
 
 
@@ -204,7 +295,7 @@ def test_soul_template_lints_clean_when_filled(tmp_path):
         "approval_gates": fm["approval_gates"],
         "spend_cap_usd_month": 10,
         "model": {"provider": "p", "id": "m", "pinned_version": "v1", "family": "family_a"},
-        "enforcement": {"x": "y"},
+        "enforcement": {ref: "control" for ref in fm["enforcement_refs"]},
         "status": "active",
         "last_assessed": "2026-10-01",
     }
@@ -222,7 +313,9 @@ def test_assessor_templates_lint_clean_when_filled(tmp_path, name):
         "target_agent_id": "donor-ack-001",
         "review_date": "2027-03-01",
         "sunset_date": "2027-11-01",
-        "tier": "T4",
+        "tier": "T3",
+        "owner": "Owner Role",
+        "second_reviewer": "Reviewer Role",
     }
     folder = tmp_path / "valid"
     shutil.copytree(FIXTURES / "valid", folder)
@@ -236,6 +329,8 @@ def test_assessor_templates_lint_clean_when_filled(tmp_path, name):
         tools=fm["tools"],
         data_classes=fm["data_classes"],
         approval_gates=fm["approval_gates"],
+        tier=fm["tier"],
+        enforcement={ref: "control" for ref in fm["enforcement_refs"]},
     )
     (a / "registry_row.yaml").write_text(yaml.safe_dump(row), encoding="utf-8")
     edit(folder / "SOUL.md", "assessor-conformance-001", "assessor-x-001")

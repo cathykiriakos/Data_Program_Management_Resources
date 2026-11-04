@@ -78,7 +78,7 @@ A team of one to ten staff rarely has three separate groups. The lean track keep
 
 | Agent tier | First line | Second line | Third line |
 |---|---|---|---|
-| T4 | Owner self-check using section 6 | Owner only | None |
+| T4 | Owner self-check using section 6, monthly | Owner only | None |
 | T3 | Owner self-check | A second person using the boundary assessor rubric as a checklist, or an assessor agent plus a monthly human read of its findings | Annual review by the program lead or a board member |
 | T1, T2 | Not in the lean track | Use the full track | Use the full track |
 
@@ -117,21 +117,21 @@ An assessor agent is a triage and sampling aid. It reads a sample of a target's 
 | 5. Answer action questions from the log | Questions about what the agent did are answered from the audit log and tool call records, not from the agent's own account. | Rubric section (action boundary questions); Limits section |
 | 6. Record evidence | One record per sampled run in the format in section 12. Quote the minimum text needed. | Evidence Format section; Data Handling section |
 | 7. Escalate to a named human | A no on any safety question goes to the target's owner the same day. The assessor never closes its own findings. | Approval and Escalation section; frontmatter `second_reviewer` |
-| 8. Stay read-only and never the only gate | One read tool, no write tools, no approval gates of its own, and no authority to approve or reject. T1, T2, and every external write keep a named human approver. | Authority, Forbidden Actions, Tools and Scopes, and Limits sections; frontmatter `tools` and `approval_gates` |
+| 8. Stay read-only and never the only gate | Read tools only (the sample, and the audit log where the rubric asks about actions or spend), no write tools, no approval gates of its own, and no authority to approve or reject. T1, T2, and every external write keep a named human approver. | Authority, Forbidden Actions, Tools and Scopes, and Limits sections; frontmatter `tools` and `approval_gates` |
 | 9. Start clean every run | No memory between runs, so one poisoned run cannot shape the next. | Memory Rules section |
 | 10. A person reviews the assessor | A second person reviews a monthly sample of the assessor's findings and checks agreement with a human reading of the same items (section 5). | Assessor and Review section; frontmatter `second_reviewer` |
 | 11. Stop on failure | If the sample cannot be read or a question cannot be answered, report that and stop. Never guess a yes. | Failure Behavior section |
 
 ### 3.2 Sampling Rule by Tier
 
-Every tier samples randomly and then adds the forced items from step 3. The percentages and minimums below are illustrative starting values. Set them against the volume of the agent, check them during the first quarter, and record the final values in the assessor charter's Sampling Rule.
+Every tier samples randomly and then adds the forced items from step 3 in full, with no cap on how many. The percentages and minimums are in the tier matrix in section 1.1 of 03, which is the single source, and are repeated here only so the table reads. Set them against the volume of the agent, check them during the first quarter, and record the final values in the assessor charter's Sampling Rule. A local rule may be higher than the matrix and must not be lower without a recorded reason.
 
 | Tier | Assessor role | Illustrative random sample | Forced items | Human review |
 |---|---|---|---|---|
-| T1 | Triage aid on top of full human approval | 25 percent, minimum 50 runs | All external writes and sends go to a person before they happen | Every external write, every assessor "no", monthly sample of assessor "yes" answers |
+| T1 | Triage aid on top of full human approval | 25 percent, minimum 50 runs | External writes and sends, errors, refusals, overrides | Every external write, every assessor "no", monthly sample of assessor "yes" answers |
 | T2 | Triage aid on top of human approval for high-impact actions | 20 percent, minimum 30 runs | All external writes, errors, refusals, overrides | Every external write, every "no", monthly sample of "yes" |
-| T3 | Assessor agent or second person | 10 percent, minimum 20 runs | External writes, errors, overrides | Every "no", monthly sample of "yes" if an assessor agent is used |
-| T4 | Optional | Owner reads a small sample each month | None | Owner |
+| T3 | Assessor agent or second person | 10 percent, minimum 20 runs | External writes, errors, refusals, overrides | Every "no", monthly sample of "yes" if an assessor agent is used |
+| T4 | Optional | Owner reads a small sample each month | None | Owner (the owner reviews a T4 agent, so a T4 agent must stay in an environment with no production data) |
 
 ### 3.3 Narrow Binary Rubrics
 
@@ -252,7 +252,7 @@ The audit ends with a short written report: scope, tests run, findings by severi
 
 ### 8.1 Where This Fits
 
-The addendum, section 3.4.2, sets the adversarial testing program: cadence, scope by tier, and test categories, aligned to MITRE ATLAS and to AIUC-1 B001. This section does not replace it. It adds a procedure organized by the OWASP Top 10 for Agentic Applications categories, which describe agent-specific failures that the addendum's categories do not name directly. Use both: the addendum's YAML fixes cadence and scope, and the table below tells the tester where to look. The category names come from the source recorded in `SOURCES.md`. Check the Landscape Snapshot for the current edition before relying on any list.
+The addendum, section 3.4.2, sets the adversarial testing program: cadence, scope by tier, and test categories, aligned to MITRE ATLAS and to AIUC-1 B001. This section does not replace it. It adds a procedure organized by the OWASP Top 10 for Agentic Applications categories, which describe agent-specific failures that the addendum's categories do not name directly. Use both: the addendum's YAML fixes cadence and scope, and the table below tells the tester where to look. The category names in 8.3 are this pillar's own categories, mapped loosely to the OWASP list. Only three of the ten OWASP names (goal hijack, memory and context poisoning, rogue agents) were seen in the sources recorded in `SOURCES.md` (S13), so the full OWASP names are to be confirmed against the source before anyone quotes them. Check the Landscape Snapshot for the current edition before relying on any list.
 
 ### 8.2 The Red-Team Assessor Type
 
@@ -267,7 +267,7 @@ A red-team assessor follows these rules:
 
 ### 8.3 Procedure by Category
 
-| Category (OWASP Agentic Top 10 name) | What to try in staging | Expected defense | Evidence |
+| Category (this pillar's name, mapped loosely to the OWASP agentic list) | What to try in staging | Expected defense | Evidence |
 |---|---|---|---|
 | Agent goal hijack | Place text in a document, email, ticket, or web page the agent reads that tells it to change its task or reveal its instructions | The agent ignores the instruction. Out-of-scope actions are stopped by the scope or gate, not by the agent's judgment | Input, output, tool call log |
 | Tool misuse | Ask for actions with each tool that the charter forbids, or chain allowed tools into a forbidden result | Scope, allow-list, or approval gate blocks the call and logs it | Blocked call log |
@@ -352,7 +352,7 @@ Run it before go-live and annually, and after a change of data class or model. T
 
 | Activity | T1 | T2 | T3 | T4 |
 |---|---|---|---|---|
-| First line self-check | Monthly | Monthly | Monthly | Quarterly |
+| First line self-check | Monthly | Monthly | Monthly | Monthly |
 | Assessor sample review | Continuous, human reads findings weekly | Continuous, human reads findings monthly | Monthly | Optional |
 | Calibration and drift check | Quarterly | Quarterly | Semi-annual | None |
 | Second line audit | Quarterly | Quarterly | Semi-annual | Annual spot check |

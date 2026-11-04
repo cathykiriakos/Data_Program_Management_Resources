@@ -61,9 +61,11 @@ REQUIRED_SECTIONS = (
 )
 ASSESSOR_SECTIONS = ("Rubric", "Sampling Rule", "Evidence Format", "Limits")
 
-ROW_REQUIRED = ("agent_id", "tools", "data_classes", "approval_gates", "spend_cap_usd_month",
+ROW_REQUIRED = ("agent_id", "tier", "tools", "data_classes", "approval_gates", "spend_cap_usd_month",
                 "model", "enforcement", "status")
 MODEL_ROW_FIELDS = ("provider", "id", "pinned_version", "family")
+STATUSES = ("proposed", "active", "suspended", "retired")
+PLACEHOLDER = re.compile(r"\{\{[^}\n]*\}\}")
 
 SECRET_PATTERNS = (
     re.compile(r"\bsk-[A-Za-z0-9_\-]{20,}"),
@@ -204,6 +206,7 @@ def lint_charter(path: Path, label: str, index: dict[str, dict], today: date) ->
     text = read_text(path)
 
     findings += check_secrets(text, label)
+    findings += check_placeholders(text, label)
 
     try:
         fm, body = parse_frontmatter(text)
@@ -243,6 +246,7 @@ def lint_charter(path: Path, label: str, index: dict[str, dict], today: date) ->
         findings.append(F("registry", f"no registry row for agent_id '{fm.get('agent_id')}'"))
         return findings
     findings += check_row(row, label)
+    findings += check_row_text(row, label)
     findings += check_mirror(fm, row, tools, gates, label)
     findings += check_families(fm, row, is_assessor, path.parent, index, label)
     return findings
@@ -262,6 +266,29 @@ def check_secrets(text: str, label: str) -> list[Finding]:
     return findings
 
 
+def check_placeholders(text: str, label: str) -> list[Finding]:
+    findings = []
+    for number, line in enumerate(text.splitlines(), start=1):
+        match = PLACEHOLDER.search(line)
+        if match:
+            findings.append(
+                Finding("placeholder", label, number,
+                        f"placeholder {match.group(0)} was not replaced")
+            )
+    return findings
+
+
+def check_row_text(row: dict, label: str) -> list[Finding]:
+    """Secret and placeholder scans of the registry row, which has no line numbers here."""
+    text = yaml.safe_dump(row, default_flow_style=False, sort_keys=False)
+    findings = []
+    for f in check_secrets(text, label) + check_placeholders(text, label):
+        findings.append(
+            Finding(f.check, label, None, f"registry row: {f.message}")
+        )
+    return findings
+
+
 def check_dates(fm: dict, label: str, today: date) -> list[Finding]:
     findings = []
     if "review_date" in fm and not _empty(fm["review_date"]):
@@ -274,8 +301,15 @@ def check_dates(fm: dict, label: str, today: date) -> list[Finding]:
                         f"review_date {review.isoformat()} is before {today.isoformat()}")
             )
     if "sunset_date" in fm and not _empty(fm["sunset_date"]):
-        if _as_date(fm["sunset_date"]) is None:
+        sunset = _as_date(fm["sunset_date"])
+        if sunset is None:
             findings.append(Finding("date", label, None, "sunset_date is not a valid YYYY-MM-DD date"))
+        elif sunset < today:
+            findings.append(
+                Finding("date", label, None,
+                        f"sunset_date {sunset.isoformat()} is before {today.isoformat()}; "
+                        "renew or retire the agent")
+            )
     return findings
 
 
@@ -293,6 +327,14 @@ def check_tier_rules(fm: dict, tier, gates: list, tools: list, label: str) -> li
                 Finding("tier", label, None,
                         "T3 requires an assessor agent or a named second_reviewer")
             )
+    owner, second = fm.get("owner"), fm.get("second_reviewer")
+    if (tier in ("T1", "T2", "T3") and not _empty(owner) and not _empty(second)
+            and str(owner).strip().lower() == str(second).strip().lower()):
+        findings.append(
+            Finding("tier", label, None,
+                    f"second_reviewer '{str(second).strip()}' is the same as owner; "
+                    "a second reviewer must be a different person or role")
+        )
     if tier in ("T1", "T2", "T3") and not gates:
         for name, scope in sorted(_write_tools(tools)):
             findings.append(
@@ -315,15 +357,40 @@ def check_row(row: dict, label: str) -> list[Finding]:
         if name not in row or (_empty(row[name]) and name not in ("tools", "data_classes", "approval_gates")):
             findings.append(Finding("registry", label, None, f"registry row missing '{name}'"))
     model = row.get("model")
-    if isinstance(model, dict):
-        for name in MODEL_ROW_FIELDS:
-            if _empty(model.get(name)):
-                findings.append(Finding("registry", label, None, f"registry row model missing '{name}'"))
+    if "model" in row and not _empty(model):
+        if isinstance(model, dict):
+            for name in MODEL_ROW_FIELDS:
+                if _empty(model.get(name)):
+                    findings.append(Finding("registry", label, None, f"registry row model missing '{name}'"))
+        else:
+            findings.append(
+                Finding("registry", label, None,
+                        "registry row model must be a mapping with provider, id, pinned_version, family")
+            )
+    status = row.get("status")
+    if not _empty(status) and str(status).strip().lower() not in STATUSES:
+        findings.append(
+            Finding("registry", label, None,
+                    f"registry row status '{status}' is not one of {', '.join(STATUSES)}")
+        )
     return findings
 
 
 def check_mirror(fm: dict, row: dict, tools: list, gates: list, label: str) -> list[Finding]:
     findings = []
+    if not _empty(fm.get("tier")) and not _empty(row.get("tier"))             and str(fm["tier"]).strip() != str(row["tier"]).strip():
+        findings.append(
+            Finding("mirror", label, None,
+                    f"tier '{fm['tier']}' in the charter differs from '{row['tier']}' in the registry row")
+        )
+    enforcement = row.get("enforcement")
+    keys = {str(k) for k in enforcement} if isinstance(enforcement, dict) else set()
+    for ref in _as_list(fm.get("enforcement_refs")):
+        if str(ref) not in keys:
+            findings.append(
+                Finding("mirror", label, None,
+                        f"enforcement_refs entry '{ref}' has no matching key in the registry row's enforcement map")
+            )
     charter_writes = _write_tools(tools)
     row_writes = _write_tools(row.get("tools"))
     for name, scope in sorted(charter_writes - row_writes):

@@ -40,7 +40,7 @@ In 90 minutes, skip the assessor agent charter. Participants name a second revie
 - **People pick an agent that sends.** A "follow-up email agent" is the most common idea. Redirect to a draft-only version. The worked example does exactly that.
 - **The charter reads like a policy statement.** No "Enforced by" lines, or lines such as "the model will not". Ask what stops it when the model does not comply.
 - **Skipping the mirror.** The linter fails because the charter and row disagree on a write tool, a data class, or a gate. This is the lesson, not a mistake to hurry past.
-- **Tier shopping.** Participants pick T4 so there is less to fill in. Ask what data it touches and take the higher tier.
+- **Tier shopping.** Participants pick T4 so there is less to fill in. Ask what data it touches and take the highest tier any answer gives, unless the recorded draft-only exception applies.
 - **Choosing a forbidden data class.** Immigration status, health, safety-sensitive, or children's data. Name the default exclusion in AGT-DAT-01 and AGT-CON-02, and ask them to pick another idea.
 - **The assessor is treated as a gate.** Say it out loud: the assessor is a triage aid, and a person approves anything that leaves the organization.
 - **Fluent samples pass.** Peers say yes because the sample sounds good. Ask them for the one observable claim in it that they could not verify.
@@ -92,4 +92,4 @@ Rows with date or version claims graded secondary only or unverified. Say "repor
 | Liability insurer AI exclusions | unverified | Say "reported" and tell people to ask their broker |
 | Colorado litigation and nonprofit coverage | unverified | Any statement about lawsuits or nonprofit scope |
 
-Then confirm the room itself: run the linter on the examples folder, check that the worked example still passes after any edits since 2026-11-04 (its `review_date` values are in 2027), and make sure no real names have entered the folder.
+Then confirm the room itself: run the linter on the examples folder with the date pinned (`python tools/agent_lint.py Agentic_AI_Standards/examples --today 2026-11-04`, the same pin the workflow uses so the examples do not expire), check that the worked example still passes after any edits since 2026-11-04 (its `review_date` values are in 2027), and make sure no real names have entered the folder.

@@ -43,6 +43,25 @@ Time-sensitive facts such as protocol revisions, regulatory dates, and provider 
 
 Standards that appear in the charter's `data_classes`, `tools`, and `approval_gates` fields are mirrored in the registry row, and `tools/agent_lint.py` compares them. Section 18 maps each standard to the lint check that tests it, or to "manual" where none does.
 
+### 1.1 Tier Matrix
+
+This is the one table of tier requirements. Every other document in this pillar (02, 04, 05, the schema and template comments, the workshop) points here and must agree with it. A cell marked "linted" is checked by `tools/agent_lint.py`. Every other cell is manual, which means a person checks it at review or audit.
+
+| Tier | Assessor | Second reviewer | Approval gates | Review cadence | Kill switch drill | Sampling |
+|---|---|---|---|---|---|---|
+| T1 | Assessor agent required (linted). Never the only gate | A named human reviewer who is not the owner or the builder | At least one, even on a read-only agent (linted) | Monthly owner log review and self-check, with assessor sampling each cycle | Quarterly | 25 percent of runs, minimum 50, plus forced items |
+| T2 | Assessor agent required (linted). Never the only gate | A named human approver who is not the owner | At least one (linted) | Monthly owner log review and self-check, with assessor sampling each cycle | Quarterly | 20 percent of runs, minimum 30, plus forced items |
+| T3 | An assessor agent or a named second reviewer (linted). The full track uses both | Named, and not the owner (linted). On the full track this person also reads the assessor's findings | One for every write tool (linted). A read-only T3 agent may have none | Monthly owner log review and self-check | Twice a year | 10 percent of runs, minimum 20, plus forced items. With no assessor agent the second reviewer samples the same way |
+| T4 | Optional | None. The owner reviews (see the T4 caveat below) | Not required. A T4 agent runs with no production data and has no external write | Monthly owner log review and self-check | Yearly | The owner reads a small sample each month. No forced items |
+
+Notes on the matrix.
+
+- Forced items are every run with an external write or send, an error, a refusal, or an approval override. They are added to the random sample in full. A cap on forced items is not allowed, because the runs most likely to hold a failure must not be dropped to fit a number. The percentages and minimums are starting values: an organization MAY raise them and MUST NOT lower them without recording the reason in the assessor charter's Sampling Rule.
+- The lean track (02, section 2) is T3 and T4 only. T3 on the lean track needs an assessor agent or a named second reviewer. The full track adds both an assessor agent and a named second person for sampled findings.
+- An assessor that reads production data is T3 or higher. T4 is for an environment with no production data (AGT-SBX-01), so a T4 assessor can only read test material.
+- T4 caveat: the owner reviews a T4 agent, so the check that `second_reviewer` differs from `owner` applies to T1 to T3 only. Nobody else sees a T4 agent's work, which is why it is kept to a sandbox with no production data.
+- The linter reads documents. It does not check reviewer independence for T1 and T2, cadences, sampling rates, drills, or the tier exception in AGT-DAT-01. Those are manual.
+
 ---
 
 ## 2. Identity
@@ -69,7 +88,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 **Rationale:** Short lifetimes shrink the window for stolen credentials. Identities that outlive their agents become unmonitored access paths.
 
-**Enforcement layer:** Identity provider token policy and a calendar or ticket for rotation and sunset review. The linter checks that `sunset_date` is present and that `review_date` is not in the past. Disabling the identity is manual.
+**Enforcement layer:** Identity provider token policy and a calendar or ticket for rotation and sunset review. The linter checks that `sunset_date` is present and not in the past, and that `review_date` is not in the past. Token lifetime and disabling the identity are manual.
 
 ---
 
@@ -77,7 +96,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 ### AGT-CH-01: Every Agent Has a Charter That Passes the Linter
 
-**Requirement:** Every agent MUST have a charter based on `templates/SOUL.template.md`, stored beside its registry row. The charter MUST carry all required frontmatter fields and all required sections, and MUST pass `python tools/agent_lint.py` before the agent goes live and before every change is merged. T1 and T2 charters MUST name an assessor agent and at least one approval gate. A T3 charter MUST name an assessor agent or a named second reviewer. A T4 charter MAY name neither.
+**Requirement:** Every agent MUST have a charter based on `templates/SOUL.template.md`, stored beside its registry row. The charter MUST carry all required frontmatter fields and all required sections, and MUST pass `python tools/agent_lint.py` before the agent goes live and before every change is merged. The tier matrix in section 1.1 sets what each tier requires. In short, T1 and T2 charters MUST name an assessor agent and at least one approval gate. A T3 charter MUST name an assessor agent or a named second reviewer who is not the owner. A T4 charter MAY name neither.
 
 **Rationale:** A written charter makes the agent's intent checkable and gives the Agent Owner something to sign. The linter catches missing parts early and applies the tier rules from the addendum.
 
@@ -85,11 +104,11 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 ### AGT-CH-02: Every Bound Names a Control Outside the Model
 
-**Requirement:** Each bound stated in a charter (authority limits, forbidden actions, data limits, tool scopes, approval gates, memory rules, failure behavior) MUST name the control outside the model that enforces it, using the "Enforced by" line in the template. A bound with no such control MUST be marked as unenforced. Policy MUST NOT be placed in the Voice section or in any persona file. The charter's `enforcement_refs` MUST match the keys in the registry's `enforcement` map.
+**Requirement:** Each bound stated in a charter (authority limits, forbidden actions, data limits, tool scopes, approval gates, memory rules, failure behavior) MUST name the control outside the model that enforces it, using the "Enforced by" line in the template. A bound with no such control MUST be marked as unenforced. Policy MUST NOT be placed in the Voice section or in any persona file. Every entry in the charter's `enforcement_refs` MUST be a key in the registry's `enforcement` map. The map MAY hold more keys than the charter lists.
 
 **Rationale:** A charter is injected context and can be overridden by hostile content or a poisoned memory. Only a control outside the model holds when the model does not comply.
 
-**Enforcement layer:** The registry `enforcement` map, checked against the real system at audit by someone other than the owner (Auditing Guide, 04). The linter checks that `enforcement_refs` is present. Content review is manual.
+**Enforcement layer:** The registry `enforcement` map, checked against the real system at audit by someone other than the owner (Auditing Guide, 04). The linter checks that `enforcement_refs` is present and that every entry has a matching key in the row's `enforcement` map (it does not require the reverse). Whether the named control exists is manual.
 
 ### AGT-CH-03: Review and Sunset Dates
 
@@ -105,11 +124,11 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 ### AGT-REG-01: One Registry Row per Agent Before First Run
 
-**Requirement:** Every agent MUST have a registry row in `registry_row.yaml` beside its charter, or an entry keyed by `agent_id` in a `registry.yaml` for a multi-agent folder, before it first runs against any non-test data. The row MUST follow `templates/registry.schema.yaml`, including tools, data classes, approval gates, spend cap, model pin with family, enforcement map, and status. Every agent found by discovery MUST be registered or retired (see 02, section 4).
+**Requirement:** Every agent MUST have a registry row in `registry_row.yaml` beside its charter, or an entry keyed by `agent_id` in a `registry.yaml` for a multi-agent folder, before it first runs against any non-test data. The row MUST follow `templates/registry.schema.yaml`, including tier, identity, tools, data classes, approval gates, spend cap, model pin with family, model review answers, enforcement map, and status. Every agent found by discovery MUST be registered or retired (see 02, section 4).
 
 **Rationale:** An agent that is not listed cannot be owned, reviewed, or retired. The registry is the organization's answer to funders, boards, and insurers about what runs.
 
-**Enforcement layer:** `tools/agent_lint.py` registry check for row completeness, and the discovery procedure in the Program Establishment guide (02) for completeness of the inventory (manual).
+**Enforcement layer:** `tools/agent_lint.py` registry checks for row completeness, a `model` mapping with all four fields, and a `tier` equal to the charter's. The linter does not check `identity` or `model_review` in the row. The discovery procedure in the Program Establishment guide (02) for completeness of the inventory (manual).
 
 ### AGT-REG-02: Registry Reconciliation
 
@@ -125,7 +144,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 **Rationale:** A status that is out of date makes the inventory untrustworthy, and a stale assessment date shows a review that did not happen.
 
-**Enforcement layer:** `tools/agent_lint.py` checks that `status` is present. Currency of the value is manual.
+**Enforcement layer:** `tools/agent_lint.py` checks that `status` is present and is one of the four values. Currency of the value is manual.
 
 ---
 
@@ -229,7 +248,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 **Rationale:** Anything the model can read, a manipulated model can disclose.
 
-**Enforcement layer:** Secrets manager access policy, secret scanning on repositories, and log redaction rules. The linter's secret pattern check covers charters only.
+**Enforcement layer:** Secrets manager access policy, secret scanning on repositories, and log redaction rules. The linter's secret pattern check covers charters and registry rows only.
 
 ### AGT-SEC-02: Rotation and Exposure Response
 
@@ -293,13 +312,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 
 ### AGT-KIL-02: Drill Cadence
 
-**Requirement:** The kill switch MUST be tested before go-live and then at the cadence in the table. A drill MUST confirm the agent can no longer act, and the time taken MUST be recorded. A failed drill MUST be fixed and repeated.
-
-| Tier | Drill cadence |
-|---|---|
-| T1 and T2 | Quarterly |
-| T3 | Twice a year |
-| T4 | Yearly |
+**Requirement:** The kill switch MUST be tested before go-live and then at the cadence in the tier matrix (section 1.1): quarterly for T1 and T2, twice a year for T3, yearly for T4. A drill MUST confirm the agent can no longer act, and the time taken MUST be recorded. A failed drill MUST be fixed and repeated.
 
 **Rationale:** An untested stop procedure often fails when needed, because credentials were renamed, people left, or a second path to the system was added.
 
@@ -372,7 +385,7 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 | Data class | Minimum handling for agents |
 |---|---|
 | Client | Allowed only for an agent whose purpose requires it. Own identity, egress allowlist, no use of models whose terms allow training on inputs, no storage in memory without charter permission, logging that does not copy the data. Tier T2 or higher for decisions about the person. |
-| Health | Tier T1 or T2 only. A vendor agreement that covers the data MUST exist before the first use, and the model and tool vendors MUST be inside it. Minimum necessary data. No consumer-grade tools. |
+| Health | T1 or T2 only. A vendor agreement that covers the data MUST exist before the first use, and the model and tool vendors MUST be inside it. Minimum necessary data. No consumer-grade tools. |
 | Education | Tier T2 or higher. Access only as the education records rules and the institution's agreements allow, and only for the purposes they permit. |
 | Immigration | Excluded from agent use by default. An exception requires CAIO approval, a legal review, and a recorded assessment of the harm if the data is exposed. |
 | Safety sensitive (survivors of violence, people in hiding, protected locations, informants) | Excluded from agent use by default. An exception requires CAIO approval, a recorded safety assessment, and a documented override under AGT-CON-03. Location and contact data MUST NOT be sent to a hosted model. |
@@ -380,9 +393,11 @@ Standards that appear in the charter's `data_classes`, `tools`, and `approval_ga
 | Staff and personnel | Not in scope for agents without HR and legal approval. |
 | Public and internal | Allowed for T3 and T4 agents. |
 
+**Tier exception for draft-only donor agents.** A draft-only agent (no send tool and no external write) limited to non-sensitive supporter contact and gift data MAY run as T3 when the program lead records the exception. The exception is recorded as a `tier_exception` field in the registry row (reason, approver role, date) and is restated in the charter's Authority section. It does not cover wealth or capacity ratings, free-text relationship notes, or any health, immigration, minor, or safety-sensitive record, and it ends if the agent gains a send tool or any external write. It does not remove the equity review in AGT-EQ-01. The linter does not check `tier_exception`: the check is manual, and the AI Risk Lead confirms it at audit.
+
 **Rationale:** A breach of the sensitive classes can put a person in danger. Defaults should be set to exclude rather than to allow.
 
-**Enforcement layer:** Data platform permissions, identity scopes, and query filters that withhold the excluded classes from the agent's access. The linter compares `data_classes` between charter and registry.
+**Enforcement layer:** Data platform permissions, identity scopes, and query filters that withhold the excluded classes from the agent's access. The linter compares `data_classes` between charter and registry. The `tier_exception` record is manual.
 
 ### AGT-DAT-02: Minimize and Mask
 
@@ -475,30 +490,30 @@ An organization MAY add populations and MUST NOT remove those listed.
 
 ## 18. Conformance Checklist
 
-The linter `tools/agent_lint.py` tests documents and not live systems. A pass means the charter, the registry row, and the tier rules are consistent. It does not mean the controls exist. The checks named in the table are those the tool reports: frontmatter (required fields), section (required sections), tier (tier rules), date, secret, registry (row completeness), mirror (charter and row agreement), and family (assessor independence). Where a standard has no matching check, the column says manual, and the audit procedure in the Auditing Guide (04) is the test.
+The linter `tools/agent_lint.py` tests documents and not live systems. A pass means the charter, the registry row, and the tier rules are consistent. It does not mean the controls exist. The checks named in the table are those the tool reports: frontmatter (required fields), section (required sections), tier (tier rules, including a second reviewer who is not the owner), date (review and sunset dates), secret (charters and registry rows), placeholder (a left-over double-brace placeholder in a charter or row), registry (row completeness, model mapping, status value), mirror (agreement between charter and row on tier, write tools, data classes, approval gates, and enforcement references), and family (assessor independence). Where a standard has no matching check, the column says manual, and the audit procedure in the Auditing Guide (04) is the test.
 
 | Standard | Topic | Lint check that tests it | Remaining test |
 |---|---|---|---|
-| AGT-ID-01 | Dedicated identity | frontmatter (identity block present) | manual: identity provider comparison |
+| AGT-ID-01 | Dedicated identity | frontmatter (identity block present in the charter) | manual: identity provider comparison, and the registry `identity` block is not checked |
 | AGT-ID-02 | Least privilege | mirror (write tools), tier (write tool needs gate) | manual: scope inspection |
-| AGT-ID-03 | Credential lifetime and lifecycle | frontmatter, date (sunset_date present) | manual |
-| AGT-CH-01 | Charter passes linter | frontmatter, section, tier | none |
-| AGT-CH-02 | Bound names a control | frontmatter (enforcement_refs present) | manual: content and real-system check |
+| AGT-ID-03 | Credential lifetime and lifecycle | frontmatter, date (sunset_date present and not past) | manual: token lifetime, rotation, and disabling the identity |
+| AGT-CH-01 | Charter passes linter | frontmatter, section, tier, placeholder | none |
+| AGT-CH-02 | Bound names a control | frontmatter (enforcement_refs present), mirror (each ref has a key in the row's enforcement map; extra row keys allowed) | manual: content and real-system check |
 | AGT-CH-03 | Review and sunset dates, no secrets | date, secret | none |
-| AGT-REG-01 | Registry row | registry | manual: discovery completeness |
+| AGT-REG-01 | Registry row | registry (row completeness, tier, model mapping), mirror (tier), placeholder | manual: discovery completeness, `identity` and `model_review` content |
 | AGT-REG-02 | Reconciliation | manual | manual |
-| AGT-REG-03 | Status and assessment record | registry (status present) | manual: currency |
+| AGT-REG-03 | Status and assessment record | registry (status present and one of the four values) | manual: currency, and `last_assessed` |
 | AGT-TOOL-01 | Tool allowlist | mirror (write tools) | manual: runtime configuration |
 | AGT-TOOL-02 | Pinned and reviewed tool servers | manual | manual |
 | AGT-TOOL-03 | Remote tool authorization | manual | manual |
 | AGT-TOOL-04 | No untrusted local process servers | manual | manual |
-| AGT-TOOL-05 | Read and write separation | tier (write tool needs gate) | manual: design review |
+| AGT-TOOL-05 | Read and write separation | manual | manual: design review of whether the agent reads outside content and also holds a write tool |
 | AGT-SKL-01 | Approved sources only | manual | manual |
 | AGT-SKL-02 | Intake review and pinning | manual | manual |
 | AGT-MEM-01 | Memory provenance | manual | manual |
 | AGT-MEM-02 | Memory review | manual | manual |
 | AGT-MEM-03 | Memory expiry and purge | manual | manual |
-| AGT-SEC-01 | Secrets out of reach | secret (charters only) | manual: repositories, logs, store policy |
+| AGT-SEC-01 | Secrets out of reach | secret (charters and registry rows) | manual: repositories, logs, store policy |
 | AGT-SEC-02 | Rotation and exposure response | manual | manual |
 | AGT-SBX-01 | Isolated execution | manual | manual |
 | AGT-SBX-02 | Egress allowlist | manual | manual |
@@ -506,19 +521,20 @@ The linter `tools/agent_lint.py` tests documents and not live systems. A pass me
 | AGT-OBS-02 | Retention and review | manual | manual |
 | AGT-KIL-01 | Stop without cooperation | manual | manual |
 | AGT-KIL-02 | Drill cadence | manual | manual |
-| AGT-SPD-01 | Cap enforced outside agent | registry (spend_cap_usd_month present) | manual: provider setting |
+| AGT-SPD-01 | Cap enforced outside agent | registry (spend_cap_usd_month present) | manual: provider setting. The charter's `spend_cap_ref` pointer is not checked |
 | AGT-SPD-02 | Alerts and rate limits | manual | manual |
-| AGT-MOD-01 | Model review | manual | manual |
-| AGT-MOD-02 | Pin the version | registry (model fields present) | manual: runtime rejects aliases |
-| AGT-MOD-03 | Assessor independence | family, tier | manual |
+| AGT-MOD-01 | Model review | manual | manual: the `model_review` answers in the row are not checked |
+| AGT-MOD-02 | Pin the version | registry (model is a mapping with provider, id, pinned_version, family) | manual: runtime rejects aliases |
+| AGT-MOD-03 | Assessor independence | family | manual: an assessor is never the only gate |
 | AGT-MOD-04 | Exit plan | manual | manual |
-| AGT-DAT-01 | Classify and limit | mirror (data_classes) | manual: platform permissions |
+| AGT-DAT-01 | Classify and limit | mirror (data_classes) | manual: platform permissions, and the `tier_exception` record |
 | AGT-DAT-02 | Minimize and mask | manual | manual |
 | AGT-CON-01 | Consent covers the use | manual | manual |
 | AGT-CON-02 | Protected populations | manual | manual |
 | AGT-CON-03 | Who may override | manual | manual |
 | AGT-EQ-01 | Equity review | manual | manual |
-| AGT-HUM-01 | Gates on high-impact actions | mirror (approval_gates), tier | manual: workflow blocks action |
+| AGT-HUM-01 | Gates on high-impact actions | mirror (approval_gates), tier (gate required by tier and for write tools) | manual: workflow blocks action |
+| Tier matrix (section 1.1) | Assessor, second reviewer, gates, cadence, drills, sampling | tier (assessor, gates, second reviewer not the owner), mirror (tier equal in charter and row) | manual: T1 and T2 reviewer independence, cadence, drills, sampling, forced items |
 | AGT-MUL-01 | Each agent governed on its own | registry (a row per agent) | manual |
 | AGT-MUL-02 | Handoff content is untrusted | manual | manual |
 

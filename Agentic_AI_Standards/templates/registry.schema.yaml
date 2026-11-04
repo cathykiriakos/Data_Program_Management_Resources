@@ -4,40 +4,70 @@
 # that holds several agents may use registry.yaml instead, with one entry per agent
 # keyed by agent_id. The agent linter reads the row and compares it with the charter.
 #
-# A charter is a prompt. The row is where the enforced facts live. Three fields are
-# mirrored on purpose: write tools with their scopes, data classes, and approval
-# gates. They appear in both the charter and the row, and the linter reports any
-# difference as an error. The spend cap and the model pin appear only here, and the
-# charter points to them, so they are edited in one place.
+# A charter is a prompt. The row is where the enforced facts live. Several fields are
+# mirrored on purpose. The tier, the write tools with their scopes, the data classes,
+# and the approval gates appear in both the charter and the row, and the linter
+# reports any difference as an error. Every name in the charter's enforcement_refs
+# must also be a key in the row's enforcement map (the map may hold more keys). The
+# spend cap and the model pin appear only here, and the charter points to them with
+# spend_cap_ref and model_ref, so they are edited in one place.
 #
-# Field table
+# Tier requirements are in one table, the tier matrix in section 1.1 of
+# 03_Agentic_Standards.md. This file does not restate them.
 #
-#   Field                 Required  Mirrored in charter  Meaning
-#   agent_id              yes       yes (same value)     Stable id, also the key in registry.yaml
-#   tier                  yes       yes (same value)     T1 to T4, from the addendum risk tiers
-#   tools                 yes       write tools only     List of name, scope, access (read or write)
-#   data_classes          yes       yes                  Data classes the agent may touch
-#   approval_gates        yes       yes                  Gates that hold an action for a named person
-#   spend_cap_usd_month   yes       no (referenced)      Monthly spend cap, enforced by the provider budget
-#   model                 yes       no (referenced)      provider, id, pinned_version, family
-#   model.family          yes       no                   Model family, used to keep assessors independent
-#   enforcement           yes       no                   Map of bound name to the control that enforces it
-#   status                yes       no                   proposed, active, suspended, or retired
-#   last_assessed         no        no                   Date of the last assessor or second-person review
+# Field table. "Linted" says whether tools/agent_lint.py checks the field. Anything
+# marked manual is checked by a person at review or audit.
+#
+#   Field                 Required  Mirrored in charter  Linted
+#   agent_id              yes       yes (same value)     present, used to find the row
+#   tier                  yes       yes (same value)     present, must equal the charter's tier
+#   identity              yes       yes (account_name)   manual (the charter's identity block is checked for presence)
+#   tools                 yes       write tools only     write tools compared in both directions
+#   data_classes          yes       yes                  compared in both directions
+#   approval_gates        yes       yes                  compared in both directions. May be empty only
+#                                                        where the matrix allows (read-only T3, T4)
+#   spend_cap_usd_month   yes       no (spend_cap_ref)   present. The spend_cap_ref pointer is not checked
+#   model                 yes       no (model_ref)       must be a mapping with provider, id,
+#                                                        pinned_version, and family, all non-empty
+#   model_review          yes       no                   manual (answers to the AGT-MOD-01 review)
+#   enforcement           yes       no                   present. Every charter enforcement_refs name must be a key
+#   status                yes       no                   must be proposed, active, suspended, or retired
+#   last_assessed         no        no                   not checked
+#   tier_exception        no        restated in          not checked, manual. Only for the draft-only donor
+#                                   Authority            exception in AGT-DAT-01
 #
 # Notes
 #
+#   - identity holds account_name, credential_type, and max_token_lifetime_minutes,
+#     the same values as the charter's identity block (AGT-ID-01, AGT-ID-03).
+#   - model is the pin: provider, id, pinned_version, family. family is the model
+#     lineage, not the vendor. Two products from one lineage share a family, and an
+#     assessor must not share a family with the agent it reviews.
+#   - model_review records the AGT-MOD-01 answers: provenance, licence terms,
+#     data handling terms (retention, training use, provider access), data residency,
+#     fit for the data classes in use, and the vendor agreement where regulated data
+#     is involved. Each is a short text answer or a reference to the filed document.
 #   - access is read or write. Anything that sends, posts, edits, deletes, or pays
 #     is write, even when the tool name sounds harmless.
-#   - approval_gates may be an empty list only for a T4 agent with no external writes.
-#   - enforcement keys should match the names in the charter's enforcement_refs.
-#     Each value says where the control lives: an identity provider scope, a sandbox
+#   - approval_gates: the matrix in 03 section 1.1 says which tiers need one. T1 and
+#     T2 need at least one. T3 needs one for every write tool, so a read-only T3 agent
+#     may have an empty list. T4 may have an empty list.
+#   - enforcement says where each control lives: an identity provider scope, a sandbox
 #     profile, a proxy or egress rule, or a budget alert.
-#   - family is the model lineage, not the vendor. Two products from one lineage share
-#     a family, and an assessor must not share a family with the agent it reviews.
+#   - tier_exception: use it only when the program lead has approved running a
+#     draft-only donor agent as T3 instead of T2 (AGT-DAT-01). It holds reason,
+#     approver_role, and date. The charter's Authority section restates it.
+#   - Do not put secrets in this file. The linter scans it for secret patterns and
+#     for left-over double-brace placeholders.
 
 agent_id: donor-ack-001
 tier: T3
+
+# Same values as the charter's identity block.
+identity:
+  account_name: svc-donor-ack-001
+  credential_type: oauth_client_credentials
+  max_token_lifetime_minutes: 60
 
 # Tools and scopes. The write entries here must match the charter exactly.
 tools:
@@ -56,6 +86,15 @@ model:
   pinned_version: "2026-09-01"
   family: family_a
 
+# Answers to the model review in AGT-MOD-01.
+model_review:
+  provenance: hosted model from the provider's official API
+  licence_terms: provider terms read and filed, use by the organization permitted
+  data_handling: no training on inputs, retention 30 days, no provider staff access by default
+  data_residency: provider region matches the organization's policy
+  fit_for_data_classes: donor_contact and gift_history only, no regulated data
+  vendor_agreement: not required, no regulated data
+
 # Where each bound is enforced outside the model.
 enforcement:
   idp_scope_mail_drafts_only: IdP scope allows drafts, not send
@@ -63,3 +102,10 @@ enforcement:
 
 status: active
 last_assessed: 2026-10-15
+
+# Present because this sample is a draft-only donor agent run as T3 under AGT-DAT-01.
+# Remove it for any agent that does not use the exception.
+tier_exception:
+  reason: draft-only agent, no send tool, non-sensitive donor contact and gift data
+  approver_role: program lead
+  date: 2026-10-01

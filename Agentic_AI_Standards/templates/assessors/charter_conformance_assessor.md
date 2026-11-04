@@ -31,6 +31,12 @@ on a different model family than the agent it reviews, and the registry rows rec
 both families so the linter can compare them. Deterministic checks (the agent linter,
 schema checks, allow lists) run first and gate; the assessor adds judgment on a
 sample. An assessor has read access only. Replace every double-brace placeholder.
+
+Tier placeholder. An assessor that reads production data is T3 or higher, never T4,
+because T4 is for an environment with no production data (AGT-SBX-01). Use T3 and name
+a second_reviewer who is not the owner. Use T4 only when the assessor reads test
+material alone. Every sampling number comes from the tier matrix of the target agent
+(03_Agentic_Standards.md, section 1.1).
 -->
 
 # Charter Conformance Assessor
@@ -53,7 +59,7 @@ Sees only the sampled items and the target charter. Findings quote the minimum t
 
 ## Tools and Scopes
 
-One read tool for the sampled items. No write tools. Enforced by: {{scope_control}}.
+Read tools only: one for the sampled items and, where a rubric question is about actions, spend, or inputs, one for the audit log entries of the sample. No write tools. Enforced by: {{scope_control}}.
 
 ## Approval and Escalation
 
@@ -92,7 +98,7 @@ Answer each question yes or no. Mark a question not applicable only when the sam
 
 ## Sampling Rule
 
-Draw a random sample of {{sample_percent}} percent of the target's runs for the period, never fewer than {{sample_minimum}}. Add every run where an error, a refusal, or an approval override was logged. Record the seed or the selection method so the sample can be repeated.
+Draw a random sample of {{sample_percent}} percent of the target's runs for the period, never fewer than {{sample_minimum}}. Add every run with an external write or send, an error, a refusal, or an approval override, with no cap on the number. Record the seed or the selection method so the sample can be repeated.
 
 ## Evidence Format
 

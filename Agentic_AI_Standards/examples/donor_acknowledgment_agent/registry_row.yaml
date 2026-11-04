@@ -1,5 +1,10 @@
 agent_id: donor-thankyou-draft-001
 tier: T3
+
+identity:
+  account_name: svc-donor-thankyou-draft-001
+  credential_type: oauth_client_credentials
+  max_token_lifetime_minutes: 60
 tools:
   - {name: read_gift_export, scope: "crm:gift_export_view:read", access: read}
   - {name: create_draft, scope: "mail:drafts:write", access: write}
@@ -11,6 +16,14 @@ model:
   id: model-a-large
   pinned_version: "2026-09-01"
   family: family_a
+
+model_review:
+  provenance: hosted model from the provider's official API
+  licence_terms: provider terms read and filed, use by the organization permitted
+  data_handling: no training on inputs, retention 30 days, no provider staff access by default
+  data_residency: provider region matches the organization's policy
+  fit_for_data_classes: donor_contact and gift_history only, no regulated data
+  vendor_agreement: not required, no regulated data
 enforcement:
   idp_scope_mail_drafts_only: IdP scope mail:drafts:write only, no send scope granted
   crm_view_two_field_groups: CRM read-only view with contact and gift field groups, notes excluded, objection-flagged and protected records filtered out
@@ -18,4 +31,10 @@ enforcement:
   stateless_runtime_profile: runtime profile with no memory store and no network except the CRM and the drafts folder
   idp_account_disable: kill switch is IdP account disable plus token revocation, held by the owner and the backup owner
 status: active
-last_assessed: 2026-10-30
+last_assessed: 2026-11-04
+
+# Approved tier exception under AGT-DAT-01. The linter does not check it, so a person confirms it at audit.
+tier_exception:
+  reason: draft-only agent with no send tool and no external write, limited to non-sensitive donor contact and gift data, so T3 instead of T2
+  approver_role: program lead
+  date: 2026-10-15
