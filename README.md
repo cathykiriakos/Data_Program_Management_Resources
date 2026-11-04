@@ -29,6 +29,7 @@ Every document in this library is:
 | Engineer onboarding to a domain | Your domain's `01_Best_Practices` → `03_Standards` → `05_Config_Change_Management` |
 | Preparing for an audit | Your domain's `04_Auditing_Guide` → Governance `04_2nd_Line_of_Defense_Strategy` |
 | Building a KPI dashboard | Your domain's KPI document (index in section 6.2) → `03_Standards` for metric definitions |
+| Putting an AI agent into production, or teaching others how | `Agentic_AI_Standards/AGENTIC_README.md` → `workshop/CHECKLIST_ONE_PAGE.md` → `03_Agentic_Standards.md` |
 | Standing up a new program from scratch | Your domain's `02_Program_Establishment` → `07_Ground_Up_Strategy` (Governance) |
 | Reviewing a change with IT/CAB | Your domain's `05_Config_Change_Management` → change tier classification table |
 
@@ -74,13 +75,14 @@ Every document in this library is:
 | Governance Control Plane | Collibra Data Intelligence Cloud | Catalog, glossary, DQ, lineage, access governance, policy |
 | Data Warehouse | Snowflake | Structured workloads, RBAC, column masking, row policies, tagging |
 | Data Lakehouse | Databricks (Unity Catalog) | ML/unstructured, streaming, feature store, Unity Catalog governance |
-| Semantic Layer | dbt Core / dbt Cloud | SQL-first transformations, metrics layer, data contracts |
+| Semantic Layer | dbt Core / dbt platform | SQL-first transformations, metrics layer, data contracts |
 | Experiment Tracking | MLflow (Databricks-hosted) | Model registry, run tracking, artifact store, lineage |
 | Governance Config | Git (YAML) | Version-controlled source of truth for all governance rules |
-| Orchestration | Apache Airflow / Databricks Workflows | DAG-based scheduling, pipeline dependency management |
+| Orchestration | Apache Airflow / Lakeflow Jobs (Databricks) | DAG-based scheduling, pipeline dependency management |
 | CI/CD | GitHub Actions | Automated testing, IaC deployment, config validation |
 | Secrets | AWS Secrets Manager / Azure Key Vault | Zero-secret-in-code enforcement |
 | ITSM | ServiceNow / Jira | Change management, incident tracking, audit evidence |
+| Agent Governance | Agentic AI Standards (vendor neutral) | Agent identity, charters, registry, assessor agents, model and runtime choice. See section 3.7 |
 
 ---
 
@@ -234,7 +236,16 @@ COLLIBRA (System of Record for Governance)
 
 | Document | Version | Description |
 |---|---|---|
-| `AGENTIC_README.md` | 1.0 | Domain-level README and document index |
+| `01_Agentic_Best_Practices.md` | 1.0 | Why a charter is a prompt and not a control, identity and least privilege, oversight design, model and runtime choice, anti-patterns |
+| `02_Agentic_Program_Establishment.md` | 1.0 | Roles, lean and full tracks, 30 60 90 day build, inventory and shadow-agent discovery, funder and insurer conversations |
+| `03_Agentic_Standards.md` | 1.0 | 42 binding standards, each naming its enforcement layer, with a conformance table |
+| `04_Agentic_Auditing_Guide.md` | 1.0 | Three lines of defense for agents, assessor agent procedure and its limits, red-team and kill switch drills |
+| `05_Agentic_Config_Change_Management.md` | 1.0 | Charters and registry as config, change tiers for agent changes, model pinning and deprecation watch |
+| `06_Agentic_KPIs_and_Benchmarking.md` | 1.0 | Agent KPI registry with calculations against registry fields |
+| `AGENT_INCIDENT_RESPONSE_ADDENDUM.md` | 1.0 | Agent severity ladder, first-hour actions, memory purge, counsel confirmation step |
+| `LANDSCAPE_SNAPSHOT.md` | 1.0 | Dated snapshot of standards, protocols, runtimes, and models, with a check-before-relying banner |
+| `SOURCES.md` | 1.0 | Sources ledger: primary URL, access date, and confidence per claim |
+| `AGENTIC_README.md` | 1.0 | Domain-level README and document index, templates, examples, and workshop kit |
 
 ---
 
@@ -288,6 +299,7 @@ This table resolves ownership at the boundaries between domains — the areas mo
 | Unauthorized data access detected | IT/CISO | CDO + Legal | DGO opens access review |
 | Schema change breaks downstream | DE Lead | Contract owner + affected consumers | DGO mediates via data contract process |
 | Conflicting metric definitions | BI COE Lead | Governance Council arbitration | DGO owns glossary resolution |
+| AI agent acts outside its charter or bounds | Agent Owner (disable first) | CAIO + AI Risk Lead; Privacy Officer if client data is involved | DGO notified; see `AGENT_INCIDENT_RESPONSE_ADDENDUM.md` |
 
 ### 5.3 Platform Change Authority
 
@@ -332,6 +344,7 @@ Each domain publishes a monthly KPI scorecard. The CDO-level view consolidates k
 | Data Engineering | `KPIs_and_Benchmarking/06_DE_KPIs_and_Benchmarking.md` |
 | Business Intelligence | `KPIs_and_Benchmarking/06_BI_KPIs_and_Benchmarking.md` |
 | Machine Learning | `KPIs_and_Benchmarking/06_ML_KPIs_and_Benchmarking.md` |
+| Agentic AI | `Agentic_AI_Standards/06_Agentic_KPIs_and_Benchmarking.md` |
 
 ---
 
@@ -353,6 +366,7 @@ Each domain publishes a monthly KPI scorecard. The CDO-level view consolidates k
 | Data Engineering | `04_DE_Auditing_Guide.md` (section 2) | `04_DE_Auditing_Guide.md` (section 3) |
 | Business Intelligence | `04_BI_Auditing_Guide.md` (section 2) | `04_BI_Auditing_Guide.md` (section 3) |
 | Machine Learning | `04_ML_Auditing_Guide.md` (section 2) | `04_ML_Auditing_Guide.md` (section 3) |
+| Agentic AI | `04_Agentic_Auditing_Guide.md` (1LOD checklist) | `04_Agentic_Auditing_Guide.md` (2LOD procedure, assessor agents) |
 
 ### 7.3 Audit Cadence
 
@@ -391,6 +405,7 @@ All four domains follow a tiered change classification model aligned to the IT C
 | Data Engineering | `Data_Engineering_Standards/05_DE_Config_Change_Management.md` |
 | Business Intelligence | `Business_Intelligence_Standards/05_BI_Config_Change_Management.md` |
 | Machine Learning | `Machine_Learning_Standards/05_ML_Config_Change_Management.md` |
+| Agentic AI | `Agentic_AI_Standards/05_Agentic_Config_Change_Management.md` |
 
 ---
 
@@ -424,6 +439,7 @@ All documents in this library are versioned and reviewed on the following schedu
 | Machine Learning | 5 documents + KPI document + domain README | ✅ Active | 1.0 |
 | Data Quality | 3 documents + domain README | ✅ Active | 1.0 |
 | Cross-Domain | 6 documents | ✅ Active | 1.0 |
+| Agentic AI | 6 documents + incident addendum + landscape snapshot + sources ledger + domain README, templates, examples, workshop kit | ✅ Active | 1.0 |
 
 ---
 
@@ -441,6 +457,8 @@ All documents in this library are versioned and reviewed on the following schedu
 | `SEMANTIC_LAYER_GUIDEBOOK.md` | Cross-domain | ✅ 2026-03 |
 | `AI_FIRST_STRATEGY_ADDENDUM.md` | Cross-domain | ✅ 2026-03 |
 | Library structure repair: folder names, KPI numbering, index, `DQ_README.md` | All | ✅ 2026-11 |
+| Agentic AI Standards pillar with templates, linters, and workshop kit | Agentic AI | ✅ 2026-11 |
+| Addendum fact refresh and mechanical tool-name and version sweeps | Cross-domain | ✅ 2026-11 |
 
 ### 10.2 Planned
 
@@ -464,6 +482,7 @@ All documents in this library are versioned and reviewed on the following schedu
 | **ML COE Lead** | MLOps platform; model registry; ML governance; T1 model oversight |
 | **Model Risk** | Independent T1 model validation; regulatory model submissions |
 | **Privacy Officer** | PII governance; data subject rights; privacy reviews on new data products |
+| **Agent Owner** | Named accountable human for each agent: charter, registry row, review dates, shutdown authority |
 | **IT / InfoSec** | Cloud infrastructure; network security; ITSM change management; audit logging |
 
 ---
