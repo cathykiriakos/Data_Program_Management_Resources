@@ -228,6 +228,14 @@ COLLIBRA (System of Record for Governance)
 | 08 | `08_DQ_CICD_and_Observability.md` | 1.0 | CI/CD integration, DQ result storage, alerting design, SLA monitoring, observability dashboard |
 | — | `DQ_README.md` | 1.0 | Domain-level README and document index |
 
+### 3.7 Agentic AI Standards (`Agentic_AI_Standards/`)
+
+> **Purpose:** Standards and templates for implementing AI agents at scale: agent identity, per-agent charters, assessor agents, security, model and runtime choice, and a lean track for small teams. Companion to the AI-First Strategy Addendum.
+
+| Document | Version | Description |
+|---|---|---|
+| `AGENTIC_README.md` | 1.0 | Domain-level README and document index |
+
 ---
 
 ## 4. Document Template Structure
