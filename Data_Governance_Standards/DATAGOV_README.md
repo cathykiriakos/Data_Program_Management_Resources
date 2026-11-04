@@ -56,7 +56,7 @@
 | ✅ Business Intelligence | Complete (v1.0) | `Business_Intelligence_Standards/BI_README.md` |
 | ✅ Machine Learning | Complete (v1.0) | `Machine_Learning_Standards/ML_README.md` |
 | ✅ Cross-Domain | Complete (v1.0) | `README.md` (root) |
-| 🔧 Data Quality | Partial — docs 06 + 08 active; docs 01–05 pending | `Data_Quality_Standards/` |
+| 🔧 Data Quality | Implementation guides 06 to 08 active; see `DQ_README.md` | `Data_Quality_Standards/` |
 
 ---
 
