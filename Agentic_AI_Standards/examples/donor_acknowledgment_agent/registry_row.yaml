@@ -1,0 +1,21 @@
+agent_id: donor-thankyou-draft-001
+tier: T3
+tools:
+  - {name: read_gift_export, scope: "crm:gift_export_view:read", access: read}
+  - {name: create_draft, scope: "mail:drafts:write", access: write}
+data_classes: [donor_contact, gift_history]
+approval_gates: [staff_review_before_send]
+spend_cap_usd_month: 40
+model:
+  provider: provider_a
+  id: model-a-large
+  pinned_version: "2026-09-01"
+  family: family_a
+enforcement:
+  idp_scope_mail_drafts_only: IdP scope mail:drafts:write only, no send scope granted
+  crm_view_two_field_groups: CRM read-only view with contact and gift field groups, notes excluded, objection-flagged and protected records filtered out
+  runtime_budget_alert: provider budget limit at the cap, alert to the owner at 80 percent
+  stateless_runtime_profile: runtime profile with no memory store and no network except the CRM and the drafts folder
+  idp_account_disable: kill switch is IdP account disable plus token revocation, held by the owner and the backup owner
+status: active
+last_assessed: 2026-10-30

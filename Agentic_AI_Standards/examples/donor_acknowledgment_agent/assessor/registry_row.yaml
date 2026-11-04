@@ -1,0 +1,19 @@
+agent_id: assessor-boundary-donor-001
+tier: T4
+tools:
+  - {name: read_sampled_drafts, scope: "mail:drafts:read", access: read}
+data_classes: [donor_contact, gift_history]
+approval_gates: []
+spend_cap_usd_month: 10
+model:
+  provider: provider_b
+  id: model-b-medium
+  pinned_version: "2026-08-15"
+  family: family_b
+enforcement:
+  idp_scope_drafts_read_only: IdP scope mail:drafts:read only, no other scope granted
+  findings_log_append_only: findings written by the runtime to an append-only log the assessor cannot edit
+  runtime_budget_alert: provider budget limit at the cap, alert to the owner at 80 percent
+  stateless_runtime_profile: runtime profile with no memory store and no network except the drafts folder and the log
+status: active
+last_assessed: 2026-10-30
