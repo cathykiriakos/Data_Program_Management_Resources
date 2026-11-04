@@ -708,6 +708,10 @@ b) Prohibited Uses. Recipient shall not:
         a new commercially exploitable data product.
    iv.  Use the Data to train generative AI models unless expressly agreed 
         in writing by Provider.
+        [Pointer: for AI model providers and open-weight models, apply the
+        due diligence in AI_FIRST_STRATEGY_ADDENDUM.md (AIUC-1 E006) and
+        Agentic_AI_Standards/03_Agentic_Standards.md. A model-provider tier
+        in this standard is deferred; see REFRESH_LEDGER.md.]
    v.   Retain the Data beyond the period specified in Schedule B 
         (Retention and Deletion Schedule).
 
@@ -1813,12 +1817,12 @@ jobs:
     environment: production
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: pip install -r requirements/vendor_monitoring.txt

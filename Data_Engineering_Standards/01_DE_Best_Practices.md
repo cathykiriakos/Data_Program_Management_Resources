@@ -104,7 +104,7 @@ dev  →  staging/qa  →  prod
 
 | Auth Method | Allowed Environments | Notes |
 |---|---|---|
-| SSO / SAML (Okta, Azure AD) | All | Required for human users |
+| SSO / SAML (Okta, Microsoft Entra ID (formerly Azure AD)) | All | Required for human users |
 | OAuth 2.0 (service accounts) | All | Required for pipeline service accounts |
 | Username + Password | Dev only | Must rotate every 90 days; no shared credentials |
 | Key-pair auth (RSA) | All (Snowflake) | Required for all Snowflake service accounts |

@@ -85,7 +85,7 @@ Week 4: Audit logging live; Approved Data Source Registry seeded
 ```
 
 **Deliverables:**
-- [ ] Tableau Server/Cloud or Power BI tenant configured with SSO (Okta/Azure AD)
+- [ ] Tableau Server/Cloud or Power BI tenant configured with SSO (Okta/Microsoft Entra ID (formerly Azure AD))
 - [ ] Alteryx Server configured with SSO
 - [ ] Local authentication disabled on all platforms
 - [ ] SCIM provisioning enabled for user lifecycle management
@@ -245,7 +245,7 @@ Week 30:    First quarterly content audit completed
 
 ```
 □ Authentication
-  □ Azure AD / Entra ID as sole identity provider
+  □ Entra ID as sole identity provider
   □ Conditional Access policy: MFA required for Power BI
   □ Block legacy authentication protocols
   □ Service principal: governed via security group; not open
@@ -539,7 +539,7 @@ Year 2 — Optimization
   Predictive stale content detection
   Automated brand validation
   Self-service to T2 promotion pipeline
-  AI-assisted dashboard insights (Copilot / Einstein)
+  AI-assisted dashboard insights (Copilot / Einstein; govern as agents per AI_FIRST_STRATEGY_ADDENDUM.md and Agentic_AI_Standards/01_Agentic_Best_Practices.md)
   → Target: Maturity Level 4
 ```
 

@@ -146,8 +146,8 @@ Layer 2 is owned jointly by the Analytics Engineering team (technical implementa
 | **Cross-BI-tool reuse** | ✅ Full | ⚠️ Snowflake consumers only | ⚠️ Databricks consumers only | ❌ Tool-specific |
 | **ML feature access** | ✅ Via dbt models | ⚠️ Limited | ✅ Strong | ❌ None |
 | **Governance integration** | ✅ Collibra via API | ✅ Native catalog | ✅ Unity Catalog | ⚠️ Partial |
-| **Natural language query** | ❌ Requires BI tool | ✅ Native Cortex | ✅ Native Genie | ✅ Copilot/Ask Data |
-| **Cost** | OSS + dbt Cloud | Included in Snowflake | Included in DBU | Tool license |
+| **Natural language query** | ❌ Requires BI tool | ✅ Native Cortex | ✅ Native Genie | ✅ Power BI Copilot (Tableau Ask Data was retired in 2024) |
+| **Cost** | OSS + dbt platform (formerly dbt Cloud) | Included in Snowflake | Included in DBU | Tool license |
 | **Best for** | ✅ **Primary governance layer** | Snowflake-centric teams | Databricks-centric teams | Consumer-facing supplement |
 
 ### 3.2 Recommended Architecture by Stack
@@ -1722,7 +1722,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
+        with: { python-version: '3.12' }
       - run: pip install pyyaml jsonschema --break-system-packages
       - name: Validate metric YAML schemas
         run: python ci/validate_metric_schemas.py --path semantic_models/

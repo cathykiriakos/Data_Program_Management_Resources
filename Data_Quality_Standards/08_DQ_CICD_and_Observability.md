@@ -14,7 +14,7 @@
 1. [The Production Testing Lifecycle](#1-the-production-testing-lifecycle)
 2. [Pipeline Integration Patterns](#2-pipeline-integration-patterns)
 3. [Airflow Integration — Complete Example](#3-airflow-integration--complete-example)
-4. [Databricks Workflows Integration](#4-databricks-workflows-integration)
+4. [Lakeflow Jobs Integration](#4-lakeflow-jobs-integration)
 5. [Alert Design — Who Gets Notified, When, and How](#5-alert-design--who-gets-notified-when-and-how)
 6. [The DQ Results Table — Design and Queries](#6-the-dq-results-table--design-and-queries)
 7. [Observability — The DQ Dashboard](#7-observability--the-dq-dashboard)
@@ -544,16 +544,16 @@ with DAG(
 
 ---
 
-## 4. Databricks Workflows Integration
+## 4. Lakeflow Jobs Integration
 
 ```python
 # databricks/workflows/orders_workflow.py
 """
-Databricks Workflow definition using the Databricks SDK.
+Lakeflow Jobs definition (formerly Databricks Workflows) using the Databricks SDK.
 Each quality gate is a separate task with declared dependencies.
 
 EQUIVALENT CONCEPT TO AIRFLOW DAGS:
-    Databricks Workflows are Databricks' native orchestration.
+    Lakeflow Jobs is Databricks' native orchestration.
     The quality gate pattern is identical — each gate is a task
     that blocks downstream tasks if it fails.
 """

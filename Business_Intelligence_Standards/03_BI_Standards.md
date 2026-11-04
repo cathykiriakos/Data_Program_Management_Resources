@@ -80,7 +80,7 @@
 
 ### STD-AUTH-001: Single Sign-On Mandatory
 
-**Standard:** All BI tool authentication must be via corporate SSO (SAML 2.0 / OIDC with Okta or Azure AD). Local username/password authentication must be disabled on all platforms in non-sandbox environments.
+**Standard:** All BI tool authentication must be via corporate SSO (SAML 2.0 / OIDC with Okta or Microsoft Entra ID (formerly Azure AD)). Local username/password authentication must be disabled on all platforms in non-sandbox environments.
 
 ---
 

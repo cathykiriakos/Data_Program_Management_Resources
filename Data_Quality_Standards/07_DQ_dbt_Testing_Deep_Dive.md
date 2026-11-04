@@ -328,9 +328,9 @@ models:
 # packages.yml (in your dbt project root)
 packages:
   - package: dbt-labs/dbt_utils
-    version: 1.1.1
-  - package: calogica/dbt_expectations  # Additional test library (highly recommended)
-    version: 0.10.1
+    version: 1.4.1
+  - package: metaplane/dbt_expectations  # Additional test library (highly recommended); formerly calogica/dbt_expectations
+    version: 0.10.10
 ```
 
 ```bash
@@ -1509,11 +1509,11 @@ jobs:
   dbt-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install dbt
         run: |

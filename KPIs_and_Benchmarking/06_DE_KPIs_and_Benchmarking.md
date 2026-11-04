@@ -243,7 +243,7 @@ class KPIResult:
 class DEKPICollector:
     """
     Collects Data Engineering KPIs from Snowflake, Databricks, and Git.
-    Designed to be scheduled monthly via Airflow or Databricks Workflows.
+    Designed to be scheduled monthly via Airflow or Lakeflow Jobs (formerly Databricks Workflows).
     All queries and targets are externalized to YAML — no hardcoded values.
     """
 

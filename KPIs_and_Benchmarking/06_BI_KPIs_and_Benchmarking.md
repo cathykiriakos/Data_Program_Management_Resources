@@ -229,7 +229,7 @@ class KPIResult:
 class BIKPICollector:
     """
     Collects BI KPIs from Snowflake, Tableau REST API, and Power BI Admin API.
-    Scheduled monthly via Airflow or Databricks Workflows.
+    Scheduled monthly via Airflow or Lakeflow Jobs (formerly Databricks Workflows).
     All queries and targets externalized to YAML.
     """
 

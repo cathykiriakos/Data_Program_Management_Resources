@@ -70,7 +70,7 @@ Week 4: Monitoring, alerting, cost tagging baseline
 - [ ] Snowflake account(s) provisioned per environment (dev/staging/prod)
 - [ ] Databricks workspace(s) provisioned per environment
 - [ ] Private endpoints configured for all platform connections
-- [ ] Okta / Azure AD SSO OIDC integrated for both platforms
+- [ ] Okta / Microsoft Entra ID (formerly Azure AD) SSO OIDC integrated for both platforms
 - [ ] Terraform repository initialized with remote state (S3/Azure Blob)
 - [ ] GitHub/GitLab repository structure established
 - [ ] CI/CD pipeline (GitHub Actions / GitLab CI / Azure DevOps) operational
@@ -185,7 +185,7 @@ Week 26:    SLA monitoring + data contracts signed off
   □ Network policy created (IP allowlist as secondary control)
 
 □ Authentication
-  □ SSO (Okta/Azure AD) configured as default
+  □ SSO (Okta/Entra ID) configured as default
   □ MFA enforced for all human users
   □ Key-pair auth for all service accounts
   □ Password policy: 90-day rotation, complexity enforced
@@ -193,7 +193,7 @@ Week 26:    SLA monitoring + data contracts signed off
 □ Roles and Access (IaC-managed)
   □ ACCOUNTADMIN restricted to break-glass accounts only
   □ Custom role hierarchy deployed via Terraform
-  □ Functional roles mapped to Okta/Azure AD groups
+  □ Functional roles mapped to Okta/Entra ID groups
 
 □ Warehouses (IaC-managed)
   □ Warehouse per workload type (ELT, BI, ML)
@@ -226,7 +226,7 @@ Week 26:    SLA monitoring + data contracts signed off
   □ Private endpoints for storage and services
 
 □ Authentication
-  □ SSO integrated (Okta/Azure AD)
+  □ SSO integrated (Okta/Entra ID)
   □ Service principals for all automated workloads
   □ PAT policy: 90-day max expiry for dev; service principals for prod
 
@@ -434,8 +434,8 @@ Post-deployment validation
 |---|---|---|
 | Ingestion (SaaS) | Fivetran / Airbyte | Managed connectors; reduces pipeline maintenance |
 | Ingestion (Custom) | Python + config framework | Full control for non-standard sources |
-| Orchestration | Apache Airflow (MWAA) / Dagster / Databricks Workflows | DAG-based scheduling with observability |
-| Transformation | dbt Core / dbt Cloud | SQL-first, version-controlled, testable transformations |
+| Orchestration | Apache Airflow (MWAA) / Dagster / Lakeflow Jobs (formerly Databricks Workflows) | DAG-based scheduling with observability |
+| Transformation | dbt Core / dbt platform (formerly dbt Cloud) | SQL-first, version-controlled, testable transformations |
 | Data Quality | Great Expectations / dbt tests | Automated, rule-based quality gates |
 | IaC | Terraform | Multi-cloud, declarative, state-managed |
 | CI/CD | GitHub Actions / Azure DevOps | Git-integrated, secrets-aware deployment |

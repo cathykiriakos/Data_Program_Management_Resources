@@ -542,7 +542,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Validate YAML configs
         run: python scripts/validate_governance_configs.py
       - name: Dry-run to DEV

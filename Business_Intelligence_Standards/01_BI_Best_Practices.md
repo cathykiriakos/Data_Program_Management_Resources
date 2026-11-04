@@ -167,7 +167,7 @@ data_sources:
 
 | Rule | Standard |
 |---|---|
-| **SSO required** | All BI tools must authenticate exclusively via corporate SSO (Okta / Azure AD / Entra ID). Username/password login must be disabled. |
+| **SSO required** | All BI tools must authenticate exclusively via corporate SSO (Okta / Microsoft Entra ID (formerly Azure AD)). Username/password login must be disabled. |
 | **MFA enforced** | Multi-factor authentication is mandatory for all users of all BI platforms. |
 | **No shared accounts** | Every user has an individual named account. Shared "department" accounts are prohibited. |
 | **Service accounts for automation** | Scheduled refreshes and automated workflows use service accounts, not personal accounts. Service accounts are not interactive. |
@@ -178,7 +178,7 @@ data_sources:
 
 ```
 Authentication Flow:
-  User → Tableau Server / Cloud → SAML 2.0 → Okta/Azure AD → MFA → Tableau
+  User → Tableau Server / Cloud → SAML 2.0 → Okta/Entra ID → MFA → Tableau
   
 Required Configuration:
   - SAML configured with IdP-initiated and SP-initiated sign-on
@@ -200,13 +200,13 @@ Required Configuration:
 
 ```
 Authentication Flow:
-  User → Power BI Service → Azure AD / Entra ID → MFA → Power BI
+  User → Power BI Service → Entra ID → MFA → Power BI
   
 Required Configuration:
   - Tenant-level: "Allow service principals to use Power BI APIs" → Controlled via security group
   - Disable: "Allow users to sign up for Power BI individually" (prevent shadow IT)
   - Disable: "External guest user access" at tenant level (enable only via approval process)
-  - Enable: "Azure AD Conditional Access" for Power BI service
+  - Enable: "Microsoft Entra Conditional Access" for Power BI service
   - Enable: "Block download of reports" for RESTRICTED classification data
 ```
 
@@ -223,7 +223,7 @@ Required Configuration:
 
 ```
 Authentication Flow:
-  User → Alteryx Server → SAML 2.0 → Okta/Azure AD → MFA → Alteryx
+  User → Alteryx Server → SAML 2.0 → Okta/Entra ID → MFA → Alteryx
   
 Required Configuration:
   - Windows Authentication disabled; SAML required

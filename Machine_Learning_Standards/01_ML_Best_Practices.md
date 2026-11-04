@@ -346,6 +346,8 @@ serving:
 
 ### 2.4 MLflow Model Registry Workflow
 
+> **Currency note (2026-11).** MLflow documents registry stages (Staging, Production, Archived) as deprecated in favor of model aliases, which are named pointers to a model version (for example an alias `champion` in place of the Production stage). The example below still uses the stage API to illustrate the gates. For new work, map each stage to an alias and promote by setting the alias. Rewriting the code sample is tracked in `REFRESH_LEDGER.md`.
+
 ```python
 # ml/registry/model_lifecycle.py
 """
