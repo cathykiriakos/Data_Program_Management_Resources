@@ -25,6 +25,7 @@ from common import (
     iter_markdown,
     read_text,
     rel_posix,
+    report,
 )
 
 BACKTICK_MD = re.compile(r"`([^`\n]+?\.md)`")
@@ -56,6 +57,7 @@ def check_index(root: Path) -> list[Finding]:
     findings: list[Finding] = []
     root_readme = root / "README.md"
     root_text = read_text(root_readme) if root_readme.exists() else ""
+    domain_readmes: dict[str, tuple[list[Path], str]] = {}
     for path in iter_markdown(root):
         rel = path.relative_to(root)
         if rel.as_posix() == "README.md":
@@ -67,15 +69,17 @@ def check_index(root: Path) -> list[Finding]:
                     Finding("index", rel.as_posix(), None, "not named in README.md")
                 )
             continue
-        domain_dir = root / top
-        readmes = [p for p in domain_dir.glob("*README.md")]
+        if top not in domain_readmes:
+            readmes = list((root / top).glob("*README.md"))
+            domain_readmes[top] = (readmes, "".join(read_text(p) for p in readmes))
+        readmes, readme_text = domain_readmes[top]
         if path in readmes:
             if path.name not in root_text and rel.as_posix() not in root_text:
                 findings.append(
                     Finding("index", rel.as_posix(), None, "domain README not named in README.md")
                 )
             continue
-        text = "".join(read_text(p) for p in readmes)
+        text = readme_text
         if len(rel.parts) == 2:
             text += root_text
         if path.name not in text:
@@ -116,7 +120,7 @@ def check_references(root: Path) -> list[Finding]:
                 if not matches:
                     message = f"`{ref}` does not exist"
                 elif "/" in ref:
-                    if any(m.relative_to(root).as_posix().endswith(ref) for m in matches):
+                    if any(rel_posix(root, m).endswith(ref) for m in matches):
                         continue
                     message = f"`{ref}` is in a different folder"
                 elif len(matches) == 1:
@@ -171,7 +175,7 @@ def check_prose(root: Path) -> list[Finding]:
 
 def check_headers(root: Path) -> list[Finding]:
     findings: list[Finding] = []
-    for path in iter_markdown(root, include_excluded=False):
+    for path in iter_markdown(root):
         rel = rel_posix(root, path)
         if not HEADER_SCOPE_PATTERN.match(rel):
             continue
@@ -238,14 +242,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--root", default=".", help="repository root")
     args = parser.parse_args(argv)
     root = Path(args.root).resolve()
-    findings = run(root)
-    for finding in findings:
-        print(finding.render())
-    if findings:
-        print(f"\n{len(findings)} finding(s).")
-        return 1
-    print("library_lint: clean")
-    return 0
+    return report("library_lint", run(root))
 
 
 if __name__ == "__main__":

@@ -116,7 +116,7 @@ Notes on the matrix.
 
 **Rationale:** An agent no one reviews drifts. A secret in a charter is readable by the model and by anyone with file access.
 
-**Enforcement layer:** `tools/agent_lint.py` date and secret checks, run in CI on a schedule so that expiry raises a failure.
+**Enforcement layer:** `tools/agent_lint.py` date and secret checks. Expiry raises a failure only when the linter runs with the real date, so an adopting organization MUST run it unpinned, on every change and on a recurring schedule, over its own charters. This library's own workflow pins the date for the worked examples so they do not expire, and it has no live charters to expire.
 
 ---
 
@@ -503,7 +503,7 @@ The linter `tools/agent_lint.py` tests documents and not live systems. A pass me
 | AGT-REG-01 | Registry row | registry (row completeness, tier, model mapping), mirror (tier), placeholder | manual: discovery completeness, `identity` and `model_review` content |
 | AGT-REG-02 | Reconciliation | manual | manual |
 | AGT-REG-03 | Status and assessment record | registry (status present and one of the four values) | manual: currency, and `last_assessed` |
-| AGT-TOOL-01 | Tool allowlist | mirror (write tools) | manual: runtime configuration |
+| AGT-TOOL-01 | Tool allowlist | mirror (write tools), tool-access (read or write only) | manual: runtime configuration |
 | AGT-TOOL-02 | Pinned and reviewed tool servers | manual | manual |
 | AGT-TOOL-03 | Remote tool authorization | manual | manual |
 | AGT-TOOL-04 | No untrusted local process servers | manual | manual |

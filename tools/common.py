@@ -35,7 +35,7 @@ def iter_markdown(root: Path, include_excluded: bool = False):
         top = rel.parts[0]
         if not include_excluded and len(rel.parts) > 1 and top in EXCLUDED_TOP_LEVEL:
             continue
-        if any(part.startswith(".") and part not in (".",) for part in rel.parts[:-1]):
+        if any(part.startswith(".") for part in rel.parts[:-1]):
             continue
         yield path
 
@@ -77,3 +77,14 @@ BANNED_WORD_PATTERN = re.compile(
     r")\b",
     re.IGNORECASE,
 )
+
+
+def report(tool_name: str, findings: list[Finding]) -> int:
+    """Print findings and return the process exit code (0 clean, 1 findings)."""
+    for finding in findings:
+        print(finding.render())
+    if findings:
+        print(f"\n{len(findings)} finding(s).")
+        return 1
+    print(f"{tool_name}: clean")
+    return 0

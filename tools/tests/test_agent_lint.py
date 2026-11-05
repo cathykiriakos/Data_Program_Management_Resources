@@ -356,3 +356,78 @@ def test_cli_exit_codes(capsys):
 
 def test_cli_bad_date_is_usage_error():
     assert al.main([str(FIXTURES / "valid"), "--today", "11/04/2026"]) == 2
+
+
+# --- Review follow-up: required-field coverage, secret forms, tool access values ---
+
+
+def _drop_charter_field(path, name):
+    kept, skipping = [], False
+    for line in path.read_text(encoding="utf-8").split("\n"):
+        if re.match(rf"^{re.escape(name)}:", line):
+            skipping = True
+            continue
+        if skipping and (line.startswith(" ") or line.startswith("- ")):
+            continue
+        skipping = False
+        kept.append(line)
+    path.write_text("\n".join(kept), encoding="utf-8")
+
+
+@pytest.mark.parametrize("name", al.REQUIRED_FIELDS)
+def test_each_required_charter_field_is_enforced(valid, name):
+    _drop_charter_field(valid / "SOUL.md", name)
+    out = msgs(lint(valid))
+    assert any(f"'{name}'" in m for m in out), out
+
+
+@pytest.mark.parametrize("name", al.ROW_REQUIRED)
+def test_each_required_row_field_is_enforced(valid, name):
+    row_path = valid / "registry_row.yaml"
+    row = yaml.safe_load(row_path.read_text(encoding="utf-8"))
+    del row[name]
+    row_path.write_text(yaml.safe_dump(row), encoding="utf-8")
+    out = msgs(lint(valid))
+    assert out, f"dropping row field {name} produced no finding"
+
+
+def _secret_samples():
+    return {
+        "openai_style": "sk-" + "a" * 24,
+        "aws_access_key": "AKIA" + "A" * 16,
+        "github_token": "ghp_" + "a" * 36,
+        "slack_token": "xoxb-" + "1" * 12,
+        "private_key": "-----BEGIN RSA PRIVATE KEY-----",
+        "keyword_assignment": "api_key: " + "A" * 20,
+        "client_secret": "client_secret: " + "A" * 20,
+        "aws_secret_env": "AWS_SECRET_ACCESS_KEY=" + "A" * 20,
+        "quoted_json_key": '"api_key": "' + "A" * 20 + '"',
+        "bearer_token": "Authorization: Bearer " + "A" * 24,
+        "jwt": "eyJ" + "a" * 12 + "." + "b" * 12 + "." + "c" * 12,
+        "google_key": "AIza" + "A" * 35,
+    }
+
+
+@pytest.mark.parametrize("kind,sample", list(_secret_samples().items()))
+def test_secret_forms_are_detected_without_echoing_them(kind, sample):
+    found = al.check_secrets(f"note: {sample}\n", "SOUL.md")
+    assert len(found) == 1, kind
+    assert sample not in found[0].render()
+
+
+def test_plain_prose_is_not_a_secret():
+    text = "Tokens expire after 60 minutes. Secret handling follows the secrets standard.\n"
+    assert al.check_secrets(text, "SOUL.md") == []
+
+
+def test_unknown_tool_access_value_is_an_error(valid):
+    edit(valid / "SOUL.md", "{name: create_draft, scope: \"mail:drafts:write\", access: write}",
+         "{name: create_draft, scope: \"mail:drafts:write\", access: read_write}")
+    out = msgs(lint(valid))
+    assert any("access" in m and "read_write" in m for m in out), out
+
+
+def test_missing_tool_access_value_is_an_error(valid):
+    edit(valid / "SOUL.md", ", access: write}", "}")
+    out = msgs(lint(valid))
+    assert any("access" in m for m in out), out

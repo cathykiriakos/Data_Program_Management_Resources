@@ -24,7 +24,7 @@ from pathlib import Path
 
 import yaml
 
-from common import Finding, read_text
+from common import Finding, read_text, rel_posix, report
 
 TIERS = ("T1", "T2", "T3", "T4")
 
@@ -74,10 +74,15 @@ SECRET_PATTERNS = (
     re.compile(r"\bxox[abprs]-[A-Za-z0-9\-]{10,}"),
     re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----"),
     re.compile(
-        r"(?i)\b(?:api[_-]?key|secret|token|password|passwd)\b\s*[:=]\s*[\"']?"
-        r"[A-Za-z0-9_\-/+=]{16,}"
+        r"(?i)(?:api[_-]?key|secret|token|password|passwd|access[_-]?key)[A-Za-z0-9_]*[\"']?"
+        r"\s*[:=]\s*[\"']?[A-Za-z0-9_\-/+=.~]{16,}"
     ),
+    re.compile(r"(?i)\bbearer\s+[A-Za-z0-9_\-.=+/]{20,}"),
+    re.compile(r"\beyJ[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}\.[A-Za-z0-9_\-]{10,}"),
+    re.compile(r"\bAIza[0-9A-Za-z_\-]{35}"),
 )
+
+TOOL_ACCESS_VALUES = ("read", "write")
 
 FRONTMATTER = re.compile(r"\A---\r?\n(.*?)\r?\n---[ \t]*(?:\r?\n|\Z)", re.DOTALL)
 H2 = re.compile(r"^##\s+(.+?)\s*$", re.MULTILINE)
@@ -127,6 +132,22 @@ def _write_tools(tools) -> set[tuple[str, str]]:
         for t in _as_list(tools)
         if isinstance(t, dict) and str(t.get("access", "")).lower() == "write"
     }
+
+
+def check_tool_access(tools, label: str) -> list[Finding]:
+    """Every tool entry must say read or write, so no tool escapes the write checks by spelling."""
+    findings = []
+    for tool in _as_list(tools):
+        if not isinstance(tool, dict):
+            continue
+        access = str(tool.get("access", "")).strip().lower()
+        if access not in TOOL_ACCESS_VALUES:
+            shown = tool.get("access") if tool.get("access") not in (None, "") else "missing"
+            findings.append(
+                Finding("tool-access", label, None,
+                        f"tool '{tool.get('name', '?')}' has access '{shown}'; use read or write")
+            )
+    return findings
 
 
 def _redact(text: str) -> str:
@@ -188,11 +209,10 @@ def build_index(base: Path) -> dict[str, dict]:
 def discover(path: Path) -> list[Path]:
     if path.is_file():
         return [path]
-    found = [
+    return [
         p for p in sorted(path.rglob("*"))
         if p.is_file() and (p.name == "SOUL.md" or p.name.endswith(".charter.md"))
     ]
-    return found
 
 
 # ---------------------------------------------------------------- checks
@@ -216,7 +236,7 @@ def lint_charter(path: Path, label: str, index: dict[str, dict], today: date) ->
         return findings + [F("frontmatter", "no YAML frontmatter found")]
 
     for name in REQUIRED_FIELDS:
-        if name not in fm or _empty(fm[name]) and name != "tools":
+        if name not in fm or (_empty(fm[name]) and name != "tools"):
             findings.append(F("frontmatter", f"missing required field '{name}'"))
     for name in PRESENT_FIELDS:
         if name not in fm:
@@ -239,6 +259,7 @@ def lint_charter(path: Path, label: str, index: dict[str, dict], today: date) ->
 
     gates = _as_list(fm.get("approval_gates"))
     tools = _as_list(fm.get("tools"))
+    findings += check_tool_access(tools, label)
     findings += check_tier_rules(fm, tier, gates, tools, label)
 
     row = find_row(fm.get("agent_id"), path.parent, index)
@@ -352,7 +373,7 @@ def find_row(agent_id, folder: Path, index: dict[str, dict]) -> dict | None:
 
 
 def check_row(row: dict, label: str) -> list[Finding]:
-    findings = []
+    findings = check_tool_access(row.get("tools"), f"{label} (registry row)")
     for name in ROW_REQUIRED:
         if name not in row or (_empty(row[name]) and name not in ("tools", "data_classes", "approval_gates")):
             findings.append(Finding("registry", label, None, f"registry row missing '{name}'"))
@@ -378,7 +399,11 @@ def check_row(row: dict, label: str) -> list[Finding]:
 
 def check_mirror(fm: dict, row: dict, tools: list, gates: list, label: str) -> list[Finding]:
     findings = []
-    if not _empty(fm.get("tier")) and not _empty(row.get("tier"))             and str(fm["tier"]).strip() != str(row["tier"]).strip():
+    if (
+        not _empty(fm.get("tier"))
+        and not _empty(row.get("tier"))
+        and str(fm["tier"]).strip() != str(row["tier"]).strip()
+    ):
         findings.append(
             Finding("mirror", label, None,
                     f"tier '{fm['tier']}' in the charter differs from '{row['tier']}' in the registry row")
@@ -467,7 +492,7 @@ def run(path: Path, today: date) -> list[Finding]:
     index = build_index(base)
     findings: list[Finding] = []
     for charter in discover(path):
-        label = charter.relative_to(base).as_posix() if path.is_dir() else charter.name
+        label = rel_posix(base, charter) if path.is_dir() else charter.name
         findings.extend(lint_charter(charter, label, index, today))
     return findings
 
@@ -492,14 +517,7 @@ def main(argv: list[str] | None = None) -> int:
         except ValueError:
             print(f"agent_lint: --today must be YYYY-MM-DD, got '{args.today}'", file=sys.stderr)
             return 2
-    findings = run(path, today)
-    for finding in findings:
-        print(finding.render())
-    if findings:
-        print(f"\n{len(findings)} finding(s).")
-        return 1
-    print("agent_lint: clean")
-    return 0
+    return report("agent_lint", run(path, today))
 
 
 if __name__ == "__main__":
