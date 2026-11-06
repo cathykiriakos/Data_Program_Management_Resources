@@ -10,7 +10,7 @@ from pathlib import Path
 EXCLUDED_TOP_LEVEL = {".git", ".github", ".pytest_cache", "docs", "tools", "__pycache__"}
 
 # Prose rules apply to new text only: the agentic pillar and the refresh ledger.
-PROSE_SCOPE_DIRS = ("Agentic_AI_Standards",)
+PROSE_SCOPE_DIRS = ("Agentic_AI_Standards", "Getting_Started", "Skills_Library")
 PROSE_SCOPE_FILES = ("REFRESH_LEDGER.md",)
 
 PROSE_ALLOW_MARKER = "lint:allow"

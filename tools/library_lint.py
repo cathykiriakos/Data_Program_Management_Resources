@@ -30,6 +30,8 @@ from common import (
 
 BACKTICK_MD = re.compile(r"`([^`\n]+?\.md)`")
 SKIP_REF_CHARS = ("*", "<", ">", "{", "}", "http://", "https://", "$")
+# Format names that every skill folder repeats, so a bare mention names no single file.
+GENERIC_FILE_NAMES = {"SKILL.md"}
 
 HEADER_FIELDS = (
     ("Document Owner", ("Document Owner", "Domain Owner")),
@@ -113,6 +115,8 @@ def check_references(root: Path) -> list[Finding]:
             for match in BACKTICK_MD.finditer(line):
                 ref = match.group(1).strip()
                 if any(token in ref for token in SKIP_REF_CHARS) or " " in ref:
+                    continue
+                if ref in GENERIC_FILE_NAMES:
                     continue
                 if (root / ref).is_file() or (path.parent / ref).is_file():
                     continue

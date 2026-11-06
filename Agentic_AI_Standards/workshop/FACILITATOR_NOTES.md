@@ -93,3 +93,22 @@ Rows with date or version claims graded secondary only or unverified. Say "repor
 | Colorado litigation and nonprofit coverage | unverified | Any statement about lawsuits or nonprofit scope |
 
 Then confirm the room itself: run the linter on the examples folder with the date pinned (`python tools/agent_lint.py Agentic_AI_Standards/examples --today 2026-11-04`, the same pin the workflow uses so the examples do not expire), check that the worked example still passes after any edits since 2026-11-04 (its `review_date` values are in 2027), and make sure no real names have entered the folder.
+
+## Closing segment: add three skills live (10 minutes)
+
+Run this at the end of either format. It shows attendees how to take the crawl-stage skills home. Most attendees will use the Claude desktop app, with a mix of free and paid accounts, so lead with the app route and have the paste fallback ready for anyone whose menu has no Skills entry. The full steps are in `Skills_Library/INSTALL.md`.
+
+| Minutes | Step |
+|---|---|
+| 0 to 2 | Show the nine skills in `Skills_Library/README.md` and say which are crawl stage. Make the point that a skill is plain text anyone can read before installing it |
+| 2 to 5 | Live install of `data-consistency-check`: zip the folder, then Customize, Skills, plus, Create skill, Upload a skill. Show the folder-inside-the-zip rule and what an upload error looks like |
+| 5 to 8 | Run it on the fictional sample list you prepared. Show that it reports and changes nothing |
+| 8 to 10 | Run `board-of-advisors` on a one-paragraph strategy from the room. For attendees without skills, show Route C: paste the file's text as the first message |
+
+Before the room fills, check the following the morning of:
+
+- [ ] Your own account can upload a skill, and code execution is on
+- [ ] The three skill folders are already zipped on the projector machine and on a shared drive, with the folder at the root of each zip
+- [ ] The fictional sample spreadsheet has stray spaces, mixed state formats, and three near-duplicate names, and contains no real names
+- [ ] You re-opened the three pages in the Sources list of `Skills_Library/INSTALL.md` and the menu labels still match
+- [ ] Attendees were told in advance not to bring client or donor data to the demo

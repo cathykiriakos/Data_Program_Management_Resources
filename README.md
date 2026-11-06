@@ -1,12 +1,70 @@
-# Enterprise Data Program Library
-## Chief Data Officer — Program Reference & Navigation Guide
+# Data Program Management Library
+## Data foundations first, then AI: a staged guide for nonprofits and the partners who support them
 
-> **Platform Stack:** Snowflake · Databricks · Collibra · dbt · MLflow  
-> **Frameworks:** DAMA DMBOK · DCAM · Three Lines of Defense  
-> **Version:** 1.1 | **Last Updated:** 2026-11  
-> **Classification:** Internal — Program Reference
+> **Version:** 1.2 | **Last Updated:** 2026-11
+> **Classification:** Program Reference
+> **Enterprise platform stack (for larger organizations, see section 1):** Snowflake · Databricks · Collibra · dbt · MLflow
+> **Frameworks:** DAMA DMBOK · DCAM · Three Lines of Defense
 
 ---
+
+## Start Here
+
+If you are the one person at your organization who owns "the data stuff," this is written for you. You do not need a data platform, a data team, or any AI tool to begin. You need your data to be consistent, and one peer who will check your work.
+
+The idea behind this library is simple. **AI is only as good as the data beneath it.** An AI tool reads your spreadsheets the way a new colleague would, only faster and without asking questions. If a state appears as "IL", "Illinois", and "Illinois " with a trailing space, the tool sees three places and gives you confident, wrong answers. Clean, consistent data is the foundation of every successful AI effort, and it is what makes results repeatable as your pipelines grow.
+
+**Your first hour:**
+
+1. Read this page through the staged path below.
+2. Open `Getting_Started/GS_README.md` and pick the spreadsheet you report from most.
+3. Add two skills to Claude using `Skills_Library/INSTALL.md`: `data-consistency-check` and `board-of-advisors`.
+
+---
+
+## Who This Is For
+
+| You are... | What you need from this library |
+|---|---|
+| The one person who owns the data at a small nonprofit | The crawl stage, the skills library, and the lean track for a first agent. Ignore the rest until you are ready |
+| An executive director or board member | The stage descriptions below, to know what to ask for and when. You do not need to read the standards |
+| A partner organization or funder supporting several nonprofits | The staged path as a shared language, and the "ready for the next stage" tests |
+| A data leader at a larger organization | The enterprise standards in sections 1 to 11, which sit behind the walk and run stages |
+
+## Intent and How to Use This as Guidance
+
+This library has two layers. The first is a short, practical path for small teams. The second is a full set of enterprise data standards that a growing organization can adopt piece by piece. The path tells you which concepts are a must now and which can wait.
+
+Treat the library as guidance, not as a rulebook. Take what fits your size and risk. A team of one that adopts three practices well will do better than a team that skims thirty. When a document says "must," it describes the standard for an organization at that stage. It does not mean you are behind if you are earlier on the path.
+
+Data about real people carries extra duty. Anywhere this library discusses AI, assume that clients, donors, and case records stay out of any tool until someone has reviewed what that tool does with them.
+
+---
+
+## Crawl, Walk, Run
+
+| Stage | The goal | Must do | Can wait | Start in |
+|---|---|---|---|---|
+| **Crawl** | Your data says the same thing everywhere | One master list for each of partners, sites, and programs. One written format for states, dates, and phone numbers. A naming convention that scales. A peer who checks your work. Strategy pressure-tested before you present it | Platforms, catalogs, automation, formal ownership roles, audits | `Getting_Started/` and `Skills_Library/` |
+| **Walk** | Your data is trustworthy and owned | Quality rules that run on a schedule. A named owner for each dataset. A short glossary. A simple inventory of what data you hold and where. A first low-risk AI agent under the lean track, with a written charter | Certification, vendor risk programs, formal change boards, agent assessors | `Data_Quality_Standards/`, `Agentic_AI_Standards/02_Agentic_Program_Establishment.md` (lean track), `Agentic_AI_Standards/workshop/CHECKLIST_ONE_PAGE.md` |
+| **Run** | Your data and agents are governed at scale | Governance roles, data product certification, incident response, agent identity and charters, independent assessment of agent work, KPIs | Nothing is optional here for an organization handling sensitive data at scale. Order the work by risk | Everything in sections 1 to 11, and `Agentic_AI_Standards/` in full |
+
+**Ready for the next stage when** (proposals, adjust to your organization):
+
+- *Crawl to walk:* every list you report from has one master copy, a name added this month followed the written rules without anyone asking, and a peer has checked your last three changes.
+- *Walk to run:* every important dataset has an owner who answers questions about it, quality checks have caught a real problem before a report did, and an agent you run has a charter that someone other than its builder has read.
+
+The two things that do not wait for any stage: **consistent labels** and **a second person who looks at your work**. A small team does not need a second line of defense. It needs a peer.
+
+## Skills You Can Use Today
+
+A skill is a short set of written instructions that teaches Claude one job. `Skills_Library/` holds nine, including a board of advisors and a devil's advocate to pressure-test strategy, a research skill that rates its own confidence, and two that check spreadsheets and naming. `Skills_Library/INSTALL.md` shows how to add them in three steps, with a fallback for free accounts. `Skills_Library/VETTED_LINKS.md` lists outside plugin and skill libraries, each with the evidence for it and a safety note.
+
+---
+
+## For Larger Organizations: The Enterprise Library
+
+The rest of this document is the original enterprise reference for a chief data officer: the technology stack, architecture, domain standards, RACI, KPIs, audit, and change management. It describes the run stage. Smaller teams can read it as a picture of where a data program can grow.
 
 ## What This Library Is
 
@@ -249,6 +307,29 @@ COLLIBRA (System of Record for Governance)
 
 ---
 
+### 3.8 Getting Started (`Getting_Started/`)
+
+> **Purpose:** The crawl stage for small teams: make data consistent, name entities so the list can grow, and have a peer check the work. No platform is needed.
+
+| # | Document | Version | Description |
+|---|---|---|---|
+| 01 | `01_Make_Your_Data_Consistent.md` | 1.0 | One-week guide to consistent labels, formats, and a change log |
+| 02 | `02_Naming_Conventions_That_Scale.md` | 1.0 | Five naming rules, worked examples, and file naming |
+| 03 | `03_Peer_Check_One_Page.md` | 1.0 | One-page peer check and the strategy pressure test |
+| | `GS_README.md` | 1.0 | Domain-level README and the crawl-to-walk test |
+
+### 3.9 Skills Library (`Skills_Library/`)
+
+> **Purpose:** Nine reusable AI skills for small nonprofit teams, an install guide with a free-account fallback, and a list of vetted outside libraries. Add a skill when your team repeats the same careful steps.
+
+| Document | Version | Description |
+|---|---|---|
+| `Skills_Library/README.md` | 1.0 | The nine skills, when to use each, and how to add your own |
+| `INSTALL.md` | 1.0 | Three-step install for the Claude app, Claude Code, and a no-skills fallback |
+| `VETTED_LINKS.md` | 1.0 | Outside plugins and skill libraries, with license, date, and confidence per entry |
+
+---
+
 ## 4. Document Template Structure
 
 Every domain follows a consistent six-to-seven document structure. This is intentional — a new team member or auditor can navigate any domain using the same mental model.
@@ -440,6 +521,8 @@ All documents in this library are versioned and reviewed on the following schedu
 | Data Quality | 3 documents + domain README | ✅ Active | 1.0 |
 | Cross-Domain | 6 documents | ✅ Active | 1.0 |
 | Agentic AI | 6 documents + incident addendum + landscape snapshot + sources ledger + domain README, templates, examples, workshop kit | ✅ Active | 1.0 |
+| Getting Started | 3 documents + domain README | ✅ Active | 1.0 |
+| Skills Library | 9 skills + README, install guide, and vetted links | ✅ Active | 1.0 |
 
 ---
 
