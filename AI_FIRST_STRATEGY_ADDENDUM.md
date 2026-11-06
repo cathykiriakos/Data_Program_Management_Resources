@@ -3,11 +3,12 @@
 
 > **Document Type:** Addendum to CDO 2-Year Roadmap
 > **Role:** Chief AI Officer / Chief Data Officer
-> **Platform Stack:** Snowflake · Databricks · Collibra · GitHub Actions · Azure DevOps · Databricks Asset Bundles · dbt Cloud
-> **Version:** 1.0 | **Last Updated:** 2026-03
+> **Platform Stack:** Snowflake · Databricks · Collibra · GitHub Actions (standard CI) · Azure DevOps (alternative) · Databricks Asset Bundles · dbt platform (formerly dbt Cloud)
+> **Version:** 1.1 | **Last Updated:** 2026-11
 > **Classification:** Internal — Executive Strategy
 > **Primary Standard:** AIUC-1 (AI Agent Security, Safety & Reliability Standard)
-> **Supporting Frameworks:** NIST AI RMF 1.0 · ISO/IEC 42001 · EU AI Act · MITRE ATLAS · SR 11-7 · BCBS 239 · HIPAA · SOX · GDPR · CCPA
+> **Supporting Frameworks:** NIST AI RMF 1.0 · ISO/IEC 42001 · EU AI Act · MITRE ATLAS · SR 11-7 · BCBS 239 · HIPAA · SOX · GDPR · CCPA (agent-specific guidance added 2026-11, see section 1.4)
+> **Companion standard:** Agentic AI Standards pillar, entry point `Agentic_AI_Standards/AGENTIC_README.md`. This addendum is the strategy and tier source; the pillar holds the per-agent identity, charter, assessor and runtime standards. Time-sensitive facts are dated in `Agentic_AI_Standards/LANDSCAPE_SNAPSHOT.md`.
 
 ---
 
@@ -22,7 +23,7 @@ The central thesis is that **a governed data platform is not merely a prerequisi
 
 ### Strategic Commitments
 
-1. No agentic workload enters production without a corresponding entry in the AI Model Registry (Collibra-anchored), mapping all six AIUC-1 domains
+1. No agentic workload enters production without a corresponding entry in the AI Model Registry (Collibra-anchored), mapping the AIUC-1 domains in scope for its tier
 2. All agentic CI/CD pipelines inherit the data governance-as-code philosophy: config-driven, YAML-injected, and gated at every promotion stage
 3. AIUC-1 certification readiness is a Year 2 program milestone, treated as the organization's "SOC 2 for AI agents"
 4. The Three Lines of Defense (3LOD) audit structure is extended to cover agent behavior, not just data quality
@@ -50,7 +51,7 @@ The central thesis is that **a governed data platform is not merely a prerequisi
 │                  AIUC-1 STANDARD (Certifiable)                    │
 │  A. Data & Privacy  B. Security  C. Safety  D. Reliability        │
 │  E. Accountability  F. Society                                    │
-│  50+ testable controls · Quarterly adversarial testing · Annual   │
+│  Quarterly releases (see Landscape Snapshot) · Annual             │
 └─────────────────────────────┬─────────────────────────────────────┘
                               │ Implementation
 ┌─────────────────────────────▼─────────────────────────────────────┐
@@ -61,12 +62,15 @@ The central thesis is that **a governed data platform is not merely a prerequisi
                               │ Governance-as-code
 ┌─────────────────────────────▼─────────────────────────────────────┐
 │                   CI/CD & AGENTIC RUNTIME                         │
-│  GitHub Actions · Azure DevOps · Databricks Asset Bundles         │
-│  dbt Cloud · Collibra API · MLflow · Snowflake Cortex             │
+│  GitHub Actions (Azure DevOps alt.) · Databricks Asset Bundles    │
+│  dbt platform · Collibra API · MLflow · Snowflake Cortex          │
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.2 AIUC-1 Six-Domain Summary
+### 1.2 AIUC-1 Domain Summary
+
+> **Currency note (2026-11).** The table below is the March 2026 framing. AIUC-1 now releases quarterly (latest 15 Oct 2026, next 15 Jan 2027) and its current pages describe five principles: Data and Privacy, Security, Safety, Reliability and Accountability. The six-domain Society grouping used below was not seen on those pages. Control IDs are cited here as they were in the March edition; confirm each against the current changelog before use. The October 2026 release renamed B001, C010 and D004 to broader testing requirements, retired C011, C012 and D002, and made D003.4 (human approval for sensitive tool operations) a core control. See `Agentic_AI_Standards/LANDSCAPE_SNAPSHOT.md` section 1 (rows S01 to S05).
+
 
 | Domain | Code | Focus | Key Requirements |
 |--------|------|--------|------------------|
@@ -86,6 +90,22 @@ The central thesis is that **a governed data platform is not merely a prerequisi
 | **Stage 3 — Workflows** | ML Program, DE Pipelines, Semantic Layer | A, B, C, D, E | Human-in-the-loop gates; agent action boundary YAML; CI/CD gates active |
 | **Stage 4 — Autonomous** | Full ML Governance, 2LOD Audit, DQ SLAs | A, B, C, D, E, F | Quarterly adversarial testing; AIUC-1 pre-certification audit; SR 11-7 model card |
 | **Stage 5 — Multi-Agent** | Federated Governance Model, Cross-Domain RACI | All domains (full) | AIUC-1 certification achieved; annual renewal; multi-agent boundary contracts |
+
+### 1.4 Agent-Specific Frameworks and Regulation (added 2026-11)
+
+The frameworks below were published or moved after the March 2026 edition. Facts are stated at the level the Landscape Snapshot could confirm. Rows graded secondary only must be verified before relying on them. Dates, counts and control numbers live in `Agentic_AI_Standards/LANDSCAPE_SNAPSHOT.md`, and each source row is in `Agentic_AI_Standards/SOURCES.md`.
+
+| Framework | What to know | Confidence | Source row |
+|-----------|--------------|------------|------------|
+| Five Eyes joint guidance, "Careful Adoption of Agentic AI Services" | Published 1 May 2026 by the cyber agencies of Australia, the United States, Canada, New Zealand and the United Kingdom. The risk categories and recommendation count were not read from a primary page. See Landscape Snapshot | date confirmed; content secondary only, verify before relying | S08, S09, S10 |
+| OWASP Top 10 for Agentic Applications | Published 9 Dec 2025, alongside the OWASP LLM Top 10 2025 edition that this addendum previously cited without a year. See Landscape Snapshot | confirmed | S12, S14 |
+| NIST agent work | AI RMF 1.0 remains the current version and is under revision. NIST runs an AI Agent Standards Initiative, and its agent identity paper is still a draft concept paper. See Landscape Snapshot | confirmed | S06, S07 |
+| EU AI Act | Regulation (EU) 2024/1689 stands. The Digital Omnibus (Regulation (EU) 2026/1744) is reported to have postponed the high-risk obligations. Treat the postponement and its dates as unconfirmed until read on the Official Journal. See Landscape Snapshot | secondary only, verify before relying | S18, S19 |
+| Colorado automated decision-making law | SB26-189, signed 14 May 2026, replaces the SB24-205 protections. Developer obligations begin 1 Jan 2027. See Landscape Snapshot | confirmed | S20 |
+| ISO/IEC 42001 | Certifiable AI management system standard (2023). The ISO page could not be read | unverified | S11 |
+| MITRE ATLAS | Tags techniques for an agentic AI platform. Individual agent techniques were not reviewed | confirmed (limited) | S15 |
+
+For agent identity, charters, assessor agents, open-weight models and agent runtimes (the "agentic runtime" box in section 1.1 is CI/CD tooling only; runtime choice is graded in Landscape Snapshot section 3), use the Agentic AI Standards pillar rather than extending this addendum. Start with `Agentic_AI_Standards/01_Agentic_Best_Practices.md` and `Agentic_AI_Standards/03_Agentic_Standards.md`.
 
 ---
 
@@ -230,30 +250,35 @@ agent_risk_tiers:
     cicd_gate: none
 ```
 
-**4. Establish Vendor Due Diligence Process** (AIUC-1 E006) — for every foundation model provider, document: data handling and PII controls, training data provenance, data residency options (E011), security certifications (SOC 2 Type II, ISO 27001), and model card availability (E017).
+**4. Establish Vendor Due Diligence Process** (AIUC-1 E006) — for every foundation model provider, document: data handling and PII controls, training data provenance, data residency options (E011), security certifications (SOC 2 Type II, ISO 27001), and model card availability (E017). For open-weight models also record source, integrity and licence verification (AIUC-1 E006.2 in the October 2026 release; the release page and changelog disagree on one neighbouring control number, so confirm against the current changelog, row S02). Model-provider and open-weight due diligence detail: `Agentic_AI_Standards/01_Agentic_Best_Practices.md` and `Agentic_AI_Standards/03_Agentic_Standards.md`.
 
 **5. Document Processing Locations** (AIUC-1 E011) — for each regulated data classification:
 
 ```yaml
 # processing_locations.yaml
+# Region values are placeholders. Use the region identifiers of whichever
+# cloud or model host you have approved (hosted API, cloud-hosted model
+# service, or self-hosted open-weight model).
 processing_locations:
   PHI_data:
-    allowed_regions: [us-east-1, us-west-2]
+    allowed_regions: [us_region_a, us_region_b]
     on_prem_fallback: required_if_no_BAA
     regulatory_basis: HIPAA_164.312
 
   PII_EU_residents:
-    allowed_regions: [eu-west-1, eu-central-1]
+    allowed_regions: [eu_region_a, eu_region_b]
     cross_border_transfer: sccs_required
     regulatory_basis: GDPR_Art_44
 
   financial_data_sox:
-    allowed_regions: [us-east-1, us-west-2]
+    allowed_regions: [us_region_a, us_region_b]
     audit_trail_retention_years: 7
     regulatory_basis: SOX_Section_802
 ```
 
 #### 3.1.2 Stage 1 CI/CD Foundation — GitHub Actions
+
+> **CI standard (2026-11).** GitHub Actions is the library's single CI standard, matching the README technology stack. The Azure DevOps pipeline in section 3.3.3 is kept as an alternative for organizations already on Azure DevOps. Gates and checks must be equivalent on either platform.
 
 ```yaml
 # .github/workflows/ai_governance_foundation.yml
@@ -336,6 +361,8 @@ Approver: CDO + CAIO + Legal
 | AI disclosure mechanisms | E016 | "You are interacting with an AI assistant" — mandatory first response |
 
 #### 3.2.2 Agent Configuration Standard (YAML)
+
+> **See also:** the per-agent charter (a Markdown "soul" file that states purpose, authority, forbidden actions and escalation) extends this YAML. A charter is a prompt, not an enforcement layer, so each bound it states must name the control that enforces it outside the model. Template and rules: `Agentic_AI_Standards/03_Agentic_Standards.md`.
 
 Every agent is deployed from a version-controlled, CI/CD-gated YAML configuration file — extending the governance-as-code philosophy from the data program to agent deployments.
 
@@ -504,6 +531,8 @@ jobs:
 
 #### 3.2.4 2LOD Audit — Stage 2 (Python)
 
+> **See also:** assessor agents (model-based reviewers that triage and sample another agent's work) can feed this audit as a sampling and triage aid. They are never the sole gate for high-impact actions. Procedure and rubrics: `Agentic_AI_Standards/04_Agentic_Auditing_Guide.md`.
+
 ```python
 # scripts/audit/stage2_2lod_audit.py
 """
@@ -626,6 +655,8 @@ Approver: CDO + CAIO + InfoSec + Legal
 
 #### 3.3.1 The Three Agent Boundary Contracts
 
+> **See also:** the service principal named in the Action Boundary below is one instance of the per-agent identity rules (one identity per agent, short-lived scoped credentials, no borrowed staff credentials, decommissioning) in `Agentic_AI_Standards/03_Agentic_Standards.md`.
+
 At Stage 3, agents stop being conversational and start being **operational**. Three boundary contracts must be enforced in YAML and verified in CI/CD:
 
 ```
@@ -714,7 +745,9 @@ authority_boundary:
     action: halt_workflow_alert_oncall
 ```
 
-#### 3.3.3 CI/CD Pipeline — Azure DevOps (Stage 3)
+#### 3.3.3 CI/CD Pipeline — Azure DevOps (Stage 3, alternative to GitHub Actions)
+
+> **Alternative, not the standard.** Use this variant only if the organization already runs Azure DevOps. The standard is GitHub Actions (section 3.1.2).
 
 ```yaml
 # azure-pipelines-workflow-agent.yml
@@ -781,7 +814,7 @@ stages:
             displayName: "Register deployment in Collibra AI Registry"
 ```
 
-#### 3.3.4 dbt Cloud — Data Quality Contracts for Agent Consumption
+#### 3.3.4 dbt platform (formerly dbt Cloud) — Data Quality Contracts for Agent Consumption
 
 ```yaml
 # models/gold/finance/schema.yml
@@ -950,7 +983,9 @@ hipaa_controls:
     aiuc1_mapping: B008
 
   business_associate_agreement:              # Required for all LLM providers
-    required_for: [openai, anthropic, snowflake_cortex, databricks]
+    # Examples only. Verify BAA availability per contract and product, not per vendor name.
+    required_for: [openai, anthropic, snowflake_cortex, databricks,
+                   amazon_bedrock, microsoft_foundry, google_vertex_ai]
     aiuc1_mapping: E006
 ```
 
@@ -1026,6 +1061,8 @@ orchestrator:
 ```
 
 #### 3.5.3 AIUC-1 Certification Path
+
+> **Currency note.** The timeline and scenario counts below are from the March 2026 edition and were not re-verified. AIUC-1 changed its third-party testing requirements in the October 2026 release (row S04). Confirm against the current standard before planning an audit.
 
 ```
 AIUC-1 CERTIFICATION TIMELINE
@@ -1293,12 +1330,12 @@ if __name__ == "__main__":
 | **BCBS 239** | Data lineage: risk data from source to agent output | E015 + Collibra lineage | End-to-end lineage graph |
 | **HIPAA** | Minimum necessary PHI access | A003 | Snowflake column masking config |
 | **HIPAA** | PHI access audit logs | E015 | Snowflake PHI audit log; 6-yr retention |
-| **HIPAA** | BAA with LLM providers | E006 | Signed BAA documents |
+| **HIPAA** | BAA with LLM providers (verify per contract and product, row S82) | E006 | Signed BAA documents |
 | **GDPR** | Lawful basis for personal data processing | A001 | Data processing register |
 | **GDPR** | Right to deletion of agent-generated personal data | A002 | Deletion workflow tests |
 | **GDPR** | Data residency | E011 | Processing locations YAML |
 | **CCPA** | Opt-out of AI training on user data | A001, A002 | Training opt-out controls |
-| **EU AI Act** | Human oversight for high-risk AI | C-series | Human-in-the-loop trigger config |
+| **EU AI Act** | Human oversight for high-risk AI (application dates: see section 1.4) | C-series | Human-in-the-loop trigger config |
 | **EU AI Act** | Technical documentation for high-risk AI | E012, E017 | System cards + model docs in Collibra |
 | **FDA 21 CFR Part 11** | Electronic records integrity | E015 + D-series | Tamper-evident audit logs |
 
@@ -1363,7 +1400,7 @@ Q2: FIRST AGENT
 Q3: WORKFLOW AGENTS
  ├── Stage 3: first workflow agent in production
  ├── Three boundary contracts enforced in YAML and CI/CD
- ├── dbt Cloud + Snowflake DQ contracts active for agent data
+ ├── dbt platform + Snowflake DQ contracts active for agent data
  ├── First 2LOD quarterly audit of agentic AI program
  ├── SOX/HIPAA regulatory control mapping complete
  └── MITRE ATLAS threat model documented for T1 agents
@@ -1381,7 +1418,7 @@ YEAR 2 — SCALE & CERTIFY (Stages 3–5)
 
 H1: AUTONOMOUS AGENTS + CERTIFICATION
  ├── Stage 4: first autonomous agent in production
- ├── Full AIUC-1 six-domain control set active
+ ├── Full AIUC-1 control set for the tier active (domains per the current release)
  ├── AIUC-1 formal certification audit (Schellman or equivalent)
  ├── AIUC-1 certificate achieved
  ├── Quarterly adversarial testing program operational
@@ -1408,7 +1445,11 @@ H2: MULTI-AGENT + OPTIMIZATION
 | NIST | AI 600-1 GenAI Profile (2024) | GenAI-specific risk categories |
 | ISO | ISO/IEC 42001 | AI Management System (AIUC-1 operationalizes) |
 | MITRE | ATLAS (atlas.mitre.org) | Adversarial threat taxonomy for AI (B001 testing) |
-| OWASP | LLM Top 10 | LLM vulnerability taxonomy |
+| OWASP | LLM Top 10 (2025 edition) | LLM vulnerability taxonomy |
+| OWASP | Top 10 for Agentic Applications (9 Dec 2025) | Agent-specific threat list; see section 1.4 |
+| Five Eyes cyber agencies | Careful Adoption of Agentic AI Services (1 May 2026) | Joint agentic AI guidance; see section 1.4 |
+| NIST | AI Agent Standards Initiative | Agent identity and security work in progress; see section 1.4 |
+| Internal | Agentic AI Landscape Snapshot and Sources Ledger | Dated facts and primary URLs for this section: `Agentic_AI_Standards/LANDSCAPE_SNAPSHOT.md`, `Agentic_AI_Standards/SOURCES.md` |
 | Federal Reserve | SR 11-7 (2011) | Model risk management for financial institutions |
 | Basel Committee | BCBS 239 (2013) | Risk data aggregation and lineage |
 | HHS | HIPAA Security Rule (45 CFR 164) | PHI handling by AI agents |
@@ -1416,7 +1457,7 @@ H2: MULTI-AGENT + OPTIMIZATION
 | European Commission | EU AI Act (2024/1689) | High-risk AI obligations |
 | European Commission | GDPR (2016/679) | Personal data processing by AI agents |
 | California | CCPA (Cal. Civ. Code §1798) | Consumer data rights |
-| Internal | Data Program Library v2.0 (DE, DG, BI, ML) | Foundational standards this addendum extends |
+| Internal | Data Program Library v1.1 (DE, DG, BI, ML) | Foundational standards this addendum extends |
 | Hogan Lovells | Agentic AI in Financial Services (2026) | Regulatory horizon scanning |
 | Mayer Brown | Governance of Agentic AI Systems (2026) | Governance component framework |
 | IAPP | AI Governance in the Agentic Era (2026) | Risk-based guardrail design |
@@ -1428,5 +1469,6 @@ H2: MULTI-AGENT + OPTIMIZATION
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-03 | CAIO / CDO Office | Initial release — AIUC-1 aligned, all five stages |
+| 1.1 | 2026-11 | CAIO / CDO Office | Refresh: AIUC-1 framing, cadence and control notes corrected (quarterly releases, five principles); EU AI Act, Colorado, Five Eyes, OWASP agentic and NIST agent work added as section 1.4 with pointers to the Landscape Snapshot; one CI standard (GitHub Actions) with Azure DevOps marked as alternative; cloud-neutral processing locations; BAA list note and hosted-cloud model offerings; library version reference corrected to 1.1; cross-links to the Agentic AI Standards pillar |
 
-*Next Review: 2026-Q3 — triggered by AIUC-1 quarterly changelog update or regulatory change*
+*Next Review: 2027-Q1 — triggered by AIUC-1 quarterly changelog update or regulatory change*

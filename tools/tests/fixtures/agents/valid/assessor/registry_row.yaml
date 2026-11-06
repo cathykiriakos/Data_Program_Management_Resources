@@ -1,0 +1,16 @@
+agent_id: assessor-conformance-001
+tier: T4
+tools:
+  - {name: read_drafts, scope: "mail:drafts:read", access: read}
+data_classes: [donor_contact]
+approval_gates: []
+spend_cap_usd_month: 10
+model:
+  provider: provider_b
+  id: model-b-medium
+  pinned_version: "2026-08-15"
+  family: family_b
+enforcement:
+  idp_scope_mail_drafts_read: IdP scope mail:drafts:read
+status: active
+last_assessed: 2026-10-15

@@ -6,7 +6,7 @@
 **Domain:** Quality Engineering / Data Testing  
 **Version:** 1.0  
 **Who This Is For:** Engineers who have never built a data test suite before, or teams that have written some tests but want a complete, production-grade framework.  
-**Prerequisite:** Documents 1–5 of this series (highly recommended, but this document is designed to stand alone)
+**Prerequisite:** None. This document stands alone. Data quality rules and thresholds are defined in the Data Governance and Data Engineering standards, which it references.
 
 ---
 

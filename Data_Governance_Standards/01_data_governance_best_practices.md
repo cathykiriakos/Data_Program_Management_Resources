@@ -97,7 +97,7 @@ Data quality is governed across six dimensions:
 ### 3.5 Data Lineage
 
 **Best Practices:**
-- Capture lineage automatically via pipeline tooling (dbt, Databricks Delta Live Tables, Snowflake lineage) — all lineage surfaces in **Collibra's lineage graph** via native connectors
+- Capture lineage automatically via pipeline tooling (dbt, Databricks Lakeflow Spark Declarative Pipelines (formerly Delta Live Tables), Snowflake lineage) — all lineage surfaces in **Collibra's lineage graph** via native connectors
 - Collibra provides **end-to-end lineage** from source systems through Snowflake/Databricks transformations to BI reports — no manual lineage mapping required for supported connectors
 - Require lineage visibility at minimum **3 hops upstream** from any governed asset
 - Audit lineage quarterly for orphaned assets or undocumented transformations

@@ -77,6 +77,7 @@
 | **ML** | ML Engineering Team | Model development; feature engineering; deployment; monitoring | ML Engineers, Data Scientists |
 | **DO** | Data Owner | Business-accountable individual for a specific data domain or product | Finance Controller, Sales VP, etc. |
 | **DS** | Data Steward | Operational quality, access certification, metadata management for a domain | Analytics Lead, Senior Analyst |
+| **AGT-O** (pointer) | Agent Owner | Named person accountable for one agent, its charter, its identity and its reviews. Agent roles are defined in `Agentic_AI_Standards/02_Agentic_Program_Establishment.md`; a full RACI is deferred | Named in the agent registry |
 
 ### 2.2 Cross-Cutting Function Roles
 
@@ -238,6 +239,7 @@ Special escalation paths:
 | **INC-BI** — Report / data error | BI-COE | Domain BI Lead | Reviews if certified content | Signs off on re-certification | T1 report wrong → CDO within 4hr |
 | **INC-SCH** — Schema breaking change | DE-L | DE on-call | Mediates contract process | Notified | Consumers not notified → DGO arbitrates |
 | **INC-SEC** — Security breach | CISO | IT / InfoSec | Opens formal incident | Notified | Immediate — parallel CDO + Legal |
+| **INC-AGT** (pointer): AI agent incident | Agent owner named in the registry; escalate to CISO | Agent owner | Notified; logs incident | Notified | See `Agentic_AI_Standards/AGENT_INCIDENT_RESPONSE_ADDENDUM.md`. Full RACI rework deferred |
 
 ### 4.4 Cross-System Reconciliation Failures
 

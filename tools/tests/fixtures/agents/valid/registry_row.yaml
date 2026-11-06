@@ -1,0 +1,18 @@
+agent_id: donor-ack-001
+tier: T3
+tools:
+  - {name: read_gift_records, scope: "crm:gifts:read", access: read}
+  - {name: create_draft, scope: "mail:drafts:write", access: write}
+data_classes: [donor_contact, gift_history]
+approval_gates: [staff_review_before_send]
+spend_cap_usd_month: 40
+model:
+  provider: provider_a
+  id: model-a-large
+  pinned_version: "2026-09-01"
+  family: family_a
+enforcement:
+  idp_scope_mail_drafts_only: IdP scope mail:drafts:write
+  runtime_budget_alert: budget alert at 80 percent
+status: active
+last_assessed: 2026-10-15

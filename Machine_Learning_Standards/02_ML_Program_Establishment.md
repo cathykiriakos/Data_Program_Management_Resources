@@ -86,7 +86,7 @@ Week 5–6: Monitoring framework (Evidently / SageMaker Monitor) baseline
 
 **Platform Foundation Deliverables:**
 - [ ] Experiment tracking server live (MLflow backed by PostgreSQL + S3)
-- [ ] Model registry configured with at least 3 stages: Staging, Production, Archived
+- [ ] Model registry configured with at least 3 stages: Staging, Production, Archived (MLflow now deprecates stages; implement each stage as an alias, for example `champion` for Production)
 - [ ] Artifact store configured (S3 / ADLS / GCS)
 - [ ] Feature store initialized with at least one feature group
 - [ ] CI/CD pipeline template for model training and registration
@@ -183,7 +183,7 @@ Week 41–42: Self-service ML template for domain teams
 
 ### Phase 4 — Advanced Capabilities (Ongoing)
 
-- LLM / generative AI governance framework (T1 governance for LLMs)
+- LLM / generative AI governance framework (T1 governance for LLMs). Partly covered now by `AI_FIRST_STRATEGY_ADDENDUM.md` (tiers, boundary contracts, AIUC-1 controls) and `Agentic_AI_Standards/03_Agentic_Standards.md` (agent identity, charters, assessors, model choice)
 - Real-time feature serving for streaming use cases
 - Causal inference framework for intervention measurement
 - Federated learning (if data residency requirements arise)
@@ -548,7 +548,7 @@ Q4 — MLOps Automation + Scale
   → Target: Level 2/3 maturity
 
 Year 2 — Advanced Capabilities
-  LLM governance framework
+  LLM governance framework (see AI_FIRST_STRATEGY_ADDENDUM.md and Agentic_AI_Standards/AGENTIC_README.md)
   Real-time feature serving (streaming)
   A/B testing infrastructure
   Causal inference framework

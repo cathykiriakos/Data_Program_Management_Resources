@@ -56,6 +56,7 @@
 | `INC-BI` | BI Report Incorrect Data | Business Intelligence | Medium–High for regulatory reports |
 | `INC-SCH` | Schema Change Breaking Downstream | Data Engineering | Low–Medium |
 | `INC-SEC` | Credentials / Secret Exposure | Cross-domain | **High** — treat as active breach until proven otherwise |
+| `INC-AGT` (pointer) | AI Agent Incident | Cross-domain | Agent incidents are not yet a full type in this playbook. Use `Agentic_AI_Standards/AGENT_INCIDENT_RESPONSE_ADDENDUM.md` and classify as the closest type above. Full rework is deferred (see `REFRESH_LEDGER.md`) |
 
 ### 1.3 Classification Decision Tree
 
@@ -186,7 +187,7 @@ Incident Commander:  [name]
 **Description:** A DQ gate in a data pipeline has failed, blocking promotion to Silver or Gold. Data consumers may be receiving stale data or no refresh.
 
 #### Detection Sources
-- Airflow / Databricks Workflows task failure alert
+- Airflow / Lakeflow Jobs (formerly Databricks Workflows) task failure alert
 - DQ results table: CRITICAL failures exceeding 2-hour SLA
 - Collibra DQ dashboard alert
 - SLA monitoring: Gold object freshness exceeded
@@ -416,7 +417,7 @@ ORDER BY created_on DESC;
 **Description:** A data pipeline has failed to complete within its defined SLA, causing downstream consumers to receive stale or absent data.
 
 #### Detection Sources
-- Airflow / Databricks Workflows: task in FAILED state
+- Airflow / Lakeflow Jobs: task in FAILED state
 - SLA monitoring alert: pipeline not completed by scheduled delivery time
 - Consumer report: "Dashboard is showing yesterday's data"
 - Dead Letter Queue aging alert: records stuck > 48 hours
@@ -1256,6 +1257,8 @@ regulatory:
 ## 9. Regulatory Notification Reference
 
 > **This section does not constitute legal advice. Legal and Compliance must be consulted before any external notification is made.**
+
+> **Review status (2026-11).** The notification table below has not been reviewed since March 2026. Confirm every window and threshold with counsel before relying on it. Known open points are listed in `REFRESH_LEDGER.md`.
 
 ### 9.1 When to Assess
 

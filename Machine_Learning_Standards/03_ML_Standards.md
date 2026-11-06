@@ -199,7 +199,7 @@ Models that do not beat documented baselines cannot be promoted to Staging.
 
 ### STD-REG-002: Stage Promotion Gates
 
-**Standard:** Promotion between registry stages requires documented gate passage:
+**Standard:** Promotion between registry stages requires documented gate passage. Where the registry uses aliases instead of stages (MLflow deprecates stages), treat each stage below as an alias and apply the same gates:
 
 | Transition | Required Evidence |
 |---|---|

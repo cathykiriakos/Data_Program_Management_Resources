@@ -253,7 +253,7 @@ class KPIResult:
 class MLKPICollector:
     """
     Collects Machine Learning KPIs from MLflow, Snowflake, and the monitoring store.
-    Scheduled monthly via Airflow or Databricks Workflows.
+    Scheduled monthly via Airflow or Lakeflow Jobs (formerly Databricks Workflows).
     All queries and targets externalized to YAML.
     """
 

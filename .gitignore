@@ -1,0 +1,16 @@
+# Binary and proprietary formats stay out of git: every version is kept forever.
+*.pptx
+*.key
+*.eps
+*.pdf
+*.msg
+*.doc
+*.docx
+
+# Python tooling
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Local editor and plugin state
+.obsidian/plugins/

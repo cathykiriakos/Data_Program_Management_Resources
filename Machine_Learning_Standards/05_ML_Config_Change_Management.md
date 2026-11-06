@@ -532,15 +532,15 @@ on:
       - 'ml_config/**'
 
 env:
-  PYTHON_VERSION: "3.11"
+  PYTHON_VERSION: "3.12"
 
 jobs:
   # ── 1. Validate Configuration ────────────────────────────────────
   validate-config:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: pip install pyyaml jsonschema
@@ -551,7 +551,7 @@ jobs:
   secret-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
@@ -561,8 +561,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate-config, secret-scan]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: pip install -r requirements-dev.txt
@@ -575,8 +575,8 @@ jobs:
     if: github.event_name == 'pull_request'
     environment: staging
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - run: pip install -r requirements.txt
@@ -600,7 +600,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Deploy Databricks Job (update production training job definition)
         env:
           DATABRICKS_HOST:  ${{ secrets.DATABRICKS_PROD_HOST }}
@@ -615,7 +615,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [deploy-production]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Verify production job is active and scheduled
         env:
           DATABRICKS_HOST:  ${{ secrets.DATABRICKS_PROD_HOST }}

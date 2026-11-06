@@ -336,10 +336,10 @@ jobs:
   validate-registry:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - run: pip install pyyaml jsonschema
       - name: Validate Report Registry YAML
         run: python scripts/validate_report_registry.py --dir report_registry/
@@ -351,10 +351,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: [validate-registry]
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - run: pip install lxml
       - name: Validate Tableau Workbook Branding
         run: |
@@ -371,10 +371,10 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     environment: production
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
       - run: pip install msal requests
       - name: Deploy Power BI via Deployment Pipeline
         env:
