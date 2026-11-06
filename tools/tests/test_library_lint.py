@@ -197,3 +197,11 @@ def test_sources_row_with_unknown_confidence_is_reported(tmp_path):
     sources_file(tmp_path, "| A claim | https://example.org/a | 2026-11-04 | probably | S |\n")
     out = messages(ll.check_sources(tmp_path))
     assert len(out) == 1 and "onfidence" in out[0]
+
+
+def test_bare_skill_file_name_is_not_ambiguous(tmp_path):
+    write(tmp_path, "README.md", "Skills: `Skills/SK_README.md`\n")
+    write(tmp_path, "Skills/SK_README.md", "Each skill has a `SKILL.md`. See `a/SKILL.md`.\n")
+    write(tmp_path, "Skills/a/SKILL.md")
+    write(tmp_path, "Skills/b/SKILL.md")
+    assert messages(ll.check_references(tmp_path)) == []
